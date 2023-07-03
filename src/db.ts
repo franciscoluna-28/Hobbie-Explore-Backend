@@ -1,14 +1,9 @@
 import { MongoClient, Db } from "mongodb";
-import dotenv from "dotenv";
 
-// Setting up environment variables
-dotenv.config();
-
-// TODO maybe we need to get rid of this
 // Global db variable
 let db: Db;
 
-// TODO make this in a cleaner way
+// Connect to MongoDB
 export async function connectToDatabase() {
   try {
     const client: MongoClient = new MongoClient(process.env.DATABASE_URI!);
@@ -21,7 +16,6 @@ export async function connectToDatabase() {
   }
 }
 
-//TODO maybe we need to get rid of this
 // Function to get the current database
 export function getDb(): Db {
   if (!db) {
@@ -31,4 +25,3 @@ export function getDb(): Db {
 }
 
 export { db };
-
