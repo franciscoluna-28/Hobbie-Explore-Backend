@@ -1,4 +1,5 @@
 import natural, {
+  BrillPOSTaggedWord,
   BrillPOSTagger,
   Lexicon,
   RegexpTokenizer,
@@ -24,46 +25,51 @@ const ruleSet = new RuleSet(naturalSettings.language);
 
 // Getting the best keyword using Natural
 export function getBestKeyword(sentence: BoredAPIModifiedActivity): string {
-    const tokenizer = new RegexpTokenizer({ pattern: / / });
-    const tokens = tokenizer.tokenize(sentence.activity.toLowerCase());
-    
-    // TODO make this logic cleaner
-    return tokens && tokens.length > 0 ? processTokens(tokens) : "";
+  const tokenizer = new RegexpTokenizer({ pattern: / / });
+  const tokens = tokenizer.tokenize(sentence.activity.toLowerCase());
+
+  // We get the tokens back but if they're empty we get an empty string
+  return tokens && tokens.length > 0 ? processTokens(tokens) : "";
+}
+
+// Logic for processing tokens
+function processTokens(tokens: string[]): string {
+  const filteredTokens = removeStopwords(tokens, eng);
+  const tagger = new BrillPOSTagger(lexicon, ruleSet);
+  const taggedSentence = tagger.tag(filteredTokens);
+  const taggedWords = taggedSentence.taggedWords;
+
+  // Get nouns and verbs
+  const nouns = getWordsByTag(taggedWords, /^NN/);
+  const verbs = getWordsByTag(taggedWords, /^VB/);
+
+  // Get the best keyword
+  const bestKeyword = getBestKeywordFromTags(nouns, verbs);
+
+  return bestKeyword;
+}
+
+// Save words by tag
+function getWordsByTag(
+  taggedWords: BrillPOSTaggedWord[],
+  tagRegex: RegExp
+): string[] {
+  return taggedWords
+    .filter(({ tag }) => tag.match(tagRegex))
+    .map(({ token }) => token);
+}
+
+function getBestKeywordFromTags(nouns: string[], verbs: string[]) {
+  let bestKeyword = "";
+
+  // Names are more important than verbs for Unsplash search
+  if (nouns.length > 0) {
+    bestKeyword = nouns[0];
+  } else if (verbs.length > 0) {
+    // We ignore the first verb if there's more than once
+    const [firstVerb, ...restVerbs] = verbs;
+    bestKeyword = restVerbs.length > 0 ? restVerbs[0] : firstVerb;
   }
-  
-  // TODO make this logic cleaner
-  // Logic for processing
-  function processTokens(tokens: string[]): string {
-    const filteredTokens = removeStopwords(tokens, eng);
-    const tagger = new BrillPOSTagger(lexicon, ruleSet);
-    const taggedSentence = tagger.tag(filteredTokens);
-    const taggedWords = taggedSentence.taggedWords;
-    const nouns = taggedWords
-      .filter(({ tag }) => tag.match(/^NN/))
-      .map(({ token }) => token);
-    const verbs = taggedWords
-      .filter(({ tag }) => tag.match(/^VB/))
-      .map(({ token }) => token);
-  
-    // Obtener la mejor palabra clave
-    const bestKeyword = getBestKeywordFromTags(nouns, verbs);
-  
-    return bestKeyword;
-  }
-  
-  // TODO refactor this
-  function getBestKeywordFromTags(nouns: string[], verbs: string[]): string {
-    let bestKeyword = "";
-  
-    // Priorizar sustantivos sobre verbos
-    if (nouns.length > 0) {
-      bestKeyword = nouns[0];
-    } else if (verbs.length > 0) {
-      // Ignorar el primer verbo si existen más de uno
-      const filteredVerbs = verbs.slice(1); // Ignorar el primer verbo
-      bestKeyword = filteredVerbs.length > 0 ? filteredVerbs[0] : verbs[0];
-    }
-  
-    return bestKeyword;
-  }
-  
+
+  return bestKeyword;
+}
