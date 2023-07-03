@@ -1,12 +1,28 @@
 import app from ".";
-import { getRandomActivityWithImage } from "./api/activity/getActivityWithImage";
+import { ActivityRepository } from "./api/activity/activityRepository";
 
 const port = process.env.SERVER_PORT;
+
+
+
+
+
+
+
+
+
 
 //TODO connect to database
 // Starting the server
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
+});
+
+const activityRepository = new ActivityRepository();
+activityRepository.getOneRandomActivity().then((activity) => {
+  console.log(activity);
+}).catch((error) => {
+  console.log(error);
 });
 
 /* async function getRandomActivity() {
@@ -29,5 +45,3 @@ app.listen(port, () => {
   }
 })(); */
 
- console.log(getRandomActivityWithImage());
- 
