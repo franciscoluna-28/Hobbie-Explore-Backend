@@ -1,13 +1,33 @@
 import app from ".";
+import { getRandomActivityWithImage } from "./api/activity/getActivityWithImage";
 
 const port = process.env.SERVER_PORT;
-import { getRandomActivities, getRandomActivitiesByType } from "./api/boredAPI/getActivitiesFromAPI";
 
-
+//TODO connect to database
 // Starting the server
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
 
-getRandomActivities(4).then((data) => {console.log(data)});
-getRandomActivitiesByType(4, "cooking").then((data) => {console.log(data)});
+/* async function getRandomActivity() {
+  try {
+    const data = await getOneRandomActivity();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+(async () => {
+  try {
+    const y = await getRandomActivity();
+    getBestKeyword(y);
+    console.table(y);
+  } catch (error) {
+    console.error(error);
+  }
+})(); */
+
+ console.log(getRandomActivityWithImage());
+ 
