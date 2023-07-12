@@ -20,6 +20,7 @@ export async function getUnsplashImageWithQuery(
       throw new Error("No images found on Unsplash for the specified keyword!");
     }
 
+    //TODO remove the imageId (id in the final type)
     // Picking the first element
     const { id, urls, user } = results[0];
 
