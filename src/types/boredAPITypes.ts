@@ -11,12 +11,12 @@ export interface DefaultBoredAPIActivity {
 
 // After processing the key and using it as the ID
 export interface BoredAPIModifiedActivity {
+  link: string;
   activity: string;
   type: string;
   participants: number;
   price: number;
-  link: string;
-  id: string;
+  activityId: string;
   accessibility: number;
 }
 
