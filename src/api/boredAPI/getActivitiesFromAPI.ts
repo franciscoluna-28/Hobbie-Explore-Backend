@@ -12,7 +12,7 @@ function transformBoredAPIKeyToId(
   response: AxiosResponse<DefaultBoredAPIActivity>
 ): BoredAPIModifiedActivity {
   const { key, ...modifiedActivity } = response.data;
-  return { ...modifiedActivity, id: key };
+  return { ...modifiedActivity, activityId: key };
 }
 
 export async function getOneRandomActivity() {
@@ -20,11 +20,11 @@ export async function getOneRandomActivity() {
   return transformBoredAPIKeyToId(response);
 }
 
-export async function getOneRandomActivityWithQuery(
+export async function getOneRandomActivityWithQuery (
   query: BoredAPIActivityType
 ) {
   const response = await axios.get(
-    boredAPIAvailableUrls.randomActivityUrl + query
+    boredAPIAvailableUrls.randomActivityWithTypeUrl + query
   );
   return transformBoredAPIKeyToId(response);
 }
