@@ -14,7 +14,7 @@ export interface HobbieExploreActivityWihtImage {
   price: number;
   link: string;
   accessibility: number;
-  id: string;
+  activityId: string;
   urls: {
     full: string;
   };
