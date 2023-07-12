@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 interface UnsplashAvailableUrls {
   getImageWithQuery: string;
 }
@@ -13,4 +17,3 @@ export const unsplashAPIAvailableUrls: UnsplashAvailableUrls = {
     "&page=3" +
     "&query=",
 };
-
