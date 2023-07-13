@@ -11,6 +11,8 @@ export class UserController {
     this.deleteActivityFromUser = this.deleteActivityFromUser.bind(this); 
     this.addActivityToUser = this.addActivityToUser.bind(this); 
     this.addTokenToUser = this.addTokenToUser.bind(this)
+    this.getCurrentUserActivities = this.getCurrentUserActivities.bind(this)
+    
   }
 
   registerUser(req: Request, res: Response) {
@@ -102,6 +104,17 @@ export class UserController {
 
     } catch (error) {
       res.status(400).json({ error: "Bad Request" });
+    }
+  }
+
+  getCurrentUserActivities(req: Request, res: Response) {
+    try {
+      const { uid } = req.params;
+      const activities = this.userRepository.getUserActivities(uid);
+      res.json(activities);
+    } catch (error) {
+      console.error("Error retrieving current user activities:", error);
+      res.status(500).json({ error: "Failed to retrieve user activities" });
     }
   }
 }
