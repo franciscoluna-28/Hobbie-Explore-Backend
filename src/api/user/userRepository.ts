@@ -184,5 +184,26 @@ export class UserRepository {
   
     return { success: true };
   }
+
+
+  async getUserActivities(uid: string) {
+    try {
+      const currentUser = await this.findUserByUid(uid);
+  
+      console.log(currentUser);
+  
+      const activities = currentUser?.savedHobbiesAndActivities.map((activity) => activity.id) || [];
+  
+      return activities;
+    } catch (error) {
+      console.error("Error retrieving user activities:", error);
+      // Manejar el error de alguna manera, por ejemplo, lanzando una excepción o devolviendo un valor predeterminado
+      return [];
+    }
+  }
+  
+  
+
+
   
 }  
