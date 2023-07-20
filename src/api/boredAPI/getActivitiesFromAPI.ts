@@ -1,4 +1,7 @@
-import { BoredAPIActivityType } from "./../../types/boredAPITypes";
+import {
+  BoredAPIActivityType,
+  ProcessedBoredAPIModifiedActivity,
+} from "./../../types/boredAPITypes";
 import axios from "axios";
 import { boredAPIAvailableUrls } from "./urlDeclarations";
 import {
@@ -6,6 +9,7 @@ import {
   DefaultBoredAPIActivity,
 } from "../../types/boredAPITypes";
 import { AxiosResponse } from "axios";
+import { extractLinkFromBored } from "./extractAndFilterValues";
 
 // Helper function to transform "key" to "id" to avoid React conflicts
 function transformBoredAPIKeyToId(
@@ -15,16 +19,24 @@ function transformBoredAPIKeyToId(
   return { ...modifiedActivity, activityId: key };
 }
 
-export async function getOneRandomActivity() {
-  const response = await axios.get(boredAPIAvailableUrls.randomActivityUrl);
-  return transformBoredAPIKeyToId(response);
+async function getRandomActivity(
+  query?: string
+): Promise<ProcessedBoredAPIModifiedActivity> {
+  const url = query
+    ? boredAPIAvailableUrls.randomActivityWithTypeUrl + query
+    : boredAPIAvailableUrls.randomActivityUrl;
+
+  const response = await axios.get(url);
+  const modifiedActivity = transformBoredAPIKeyToId(response);
+  return extractLinkFromBored(modifiedActivity);
 }
 
-export async function getOneRandomActivityWithQuery (
+export async function getOneRandomActivity() {
+  return getRandomActivity();
+}
+
+export async function getOneRandomActivityWithQuery(
   query: BoredAPIActivityType
 ) {
-  const response = await axios.get(
-    boredAPIAvailableUrls.randomActivityWithTypeUrl + query
-  );
-  return transformBoredAPIKeyToId(response);
+  return getRandomActivity(query);
 }
