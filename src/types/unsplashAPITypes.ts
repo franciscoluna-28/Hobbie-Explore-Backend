@@ -1,6 +1,7 @@
 // Default Unsplash Image response
 export interface UnsplashImage {
   id: string;
+  blur_hash: string;
   urls?: {
     raw: string;
     full: string;
@@ -39,9 +40,12 @@ export interface UnsplashImage {
 
 // Processed Unsplash Image after filtering information
 export interface ProcessedUnsplashImage {
-  id: string;
+  imageId: string;
+  blur_hash: string;
   urls: {
     full: string;
+    thumb: string;
+    regular: string;
   };
   user: {
     name: string;
