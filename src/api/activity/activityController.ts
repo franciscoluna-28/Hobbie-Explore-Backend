@@ -54,14 +54,36 @@ export class ActivityController implements ActivityControllerProps {
     res: Response
   ): Promise<void> => {
     try {
-      const query = req.query.q as string;
+      const query = req.query.activity as string;
+      
+
       const activities = await this.activityRepository.searchActivityByQuery(
         query
       );
+
+      
       res.json(activities);
     } catch (error) {
       console.error("Error retrieving activities by query:", error);
       res.status(500).json({ error: "Failed to retrieve activities by query" });
     }
   };
+
+  public getActivityById = async (req: Request, res: Response) => {
+    try {
+      const id = req.params.id
+
+      console.log(id)
+
+      const activityToGetById = await this.activityRepository.retrieveExistingActivityFromDb(id)
+
+      console.log(activityToGetById)
+
+      res.json(activityToGetById)
+
+    } catch (error) {
+      console.error("There was an error getting the activity: ", error);
+      res.status(500).json({error: "Failed to get activity, make sure if exists"})
+    }
+  }
 }
