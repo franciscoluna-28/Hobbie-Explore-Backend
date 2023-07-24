@@ -3,7 +3,7 @@ import { Document } from "mongodb";
 import { HobbieExploreActivityIDArray } from "./activityTypes";
 
 // User to be inserted into the database
-export interface HobbieExploreUser extends Document {
+export interface IUser extends Document {
     uid: string;
     email?: string | null;
     emailVerified: boolean;
