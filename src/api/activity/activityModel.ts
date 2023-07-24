@@ -2,16 +2,16 @@ import { Schema, Document, model } from "mongoose";
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
 
 // Interfaz de la actividad con imagen
-export interface IHobbieExploreActivityWithImage extends Document {
-  activity: string;
+export interface IActivity {
+  activityName: string;
   type: BoredAPIActivityType | string;
   participants: number;
   price: number;
-  link: string;
   accessibility: number;
-  id: string;
+  activityId: string;
   urls: {
     full: string;
+    regular: string;
   };
   user: {
     name: string;
@@ -26,8 +26,8 @@ export interface IHobbieExploreActivityWithImage extends Document {
 }
 
 // Esquema de la actividad con imagen
-const hobbieExploreActivityWithImageSchema = new Schema<IHobbieExploreActivityWithImage>({
-  activity: {
+const activitySchema = new Schema<IActivity>({
+  activityName: {
     type: String,
     required: true,
   },
@@ -43,20 +43,20 @@ const hobbieExploreActivityWithImageSchema = new Schema<IHobbieExploreActivityWi
     type: Number,
     required: true,
   },
-  link: {
-    type: String,
-    required: true,
-  },
   accessibility: {
     type: Number,
     required: true,
   },
-  id: {
+  activityId: {
     type: String,
     required: true,
   },
   urls: {
     full: {
+      type: String,
+      required: true,
+    },
+    regular: {
       type: String,
       required: true,
     },
@@ -86,9 +86,6 @@ const hobbieExploreActivityWithImageSchema = new Schema<IHobbieExploreActivityWi
 });
 
 // Modelo de la actividad con imagen
-const HobbieExploreActivityWithImage = model<IHobbieExploreActivityWithImage>(
-  "HobbieExploreActivityWithImage",
-  hobbieExploreActivityWithImageSchema
-);
+export const ActivityModel = model<IActivity>("Activity", activitySchema);
 
-export default HobbieExploreActivityWithImage;
+export default ActivityModel;
