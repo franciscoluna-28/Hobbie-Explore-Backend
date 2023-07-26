@@ -13,6 +13,10 @@ export interface IActivity {
     full: string;
     regular: string;
   };
+  description: string;
+  ratingMean: number;
+  totalReviews: number;
+  links: Array<Object>;
   user: {
     name: string;
     username: string;
@@ -50,6 +54,26 @@ const activitySchema = new Schema<IActivity>({
   activityId: {
     type: String,
     required: true,
+  },
+  description: {
+    type: String,
+    required: false,
+    default: "",
+  },
+  ratingMean: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  totalReviews: {
+    type: Number,
+    required: false,
+    default: 0,
+  },
+  links: {
+    type: Schema.Types.Mixed,
+    required: false,
+    default: [],
   },
   urls: {
     full: {
