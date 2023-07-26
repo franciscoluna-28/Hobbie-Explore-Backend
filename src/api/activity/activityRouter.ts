@@ -10,5 +10,6 @@ activityRouter.get(
   activityController.getThreeRandomActivitiesWithQuery
 );
 activityRouter.get("/search", activityController.searchActivities);
+activityRouter.get("/get-activity-by-id/:id", activityController.getActivityById);
 
 export default activityRouter;
