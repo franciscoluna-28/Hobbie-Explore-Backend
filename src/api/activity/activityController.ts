@@ -73,11 +73,10 @@ export class ActivityController implements ActivityControllerProps {
     try {
       const id = req.params.id
 
-      console.log(id)
+
 
       const activityToGetById = await this.activityRepository.retrieveExistingActivityFromDb(id)
 
-      console.log(activityToGetById)
 
       res.json(activityToGetById)
 
