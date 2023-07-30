@@ -1,72 +1,79 @@
 import { WithId, Document } from "mongodb";
-import { ActivityWithImage, HobbieExploreActivityWihtImage } from "../../types/activityTypes";
+import { IActivity, ActivityModel } from "./activityModel";
 import {
   getOneRandomActivity,
   getOneRandomActivityWithQuery,
 } from "../boredAPI/getActivitiesFromAPI";
 import { getUnsplashImageWithQuery } from "../unsplashImage/getImageWithQuery";
-import { db } from "../../db";
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
-
+import { getExistingActivities } from "../../utils/getExistingActivities";
+import { getExistingActivityById } from "../../utils/getExistingActivities";
 
 interface ActivityRepositoryProps {
-  getThreeRandomActivitiesToUser(): Promise<ActivityWithImage[]>;
+  getThreeRandomActivitiesToUser(): Promise<IActivity[]>;
   getThreeRandomActivitiesToUserWithQuery(
     query: BoredAPIActivityType
-  ): Promise<ActivityWithImage[]>;
+  ): Promise<IActivity[]>;
   searchActivityByQuery(query: string): Promise<WithId<Document>[]>;
 }
 
-// TODO Have the DB as a parameter here
 export class ActivityRepository implements ActivityRepositoryProps {
-  private async getOneRandomActivityToUser(): Promise<ActivityWithImage> {
+  private async getOneRandomActivityToUser(): Promise<IActivity> {
     const boredApiActivity = await getOneRandomActivity();
     const unsplashImage = await getUnsplashImageWithQuery(
-      boredApiActivity.activity
+      boredApiActivity.activityName
     );
 
-    const customActivity: ActivityWithImage = {
+    const customActivity: IActivity = new ActivityModel({
       ...boredApiActivity,
       ...unsplashImage,
-    };
+      ratingMean: 0,
+      totalReviews: 0,
+      links: [],
+      description: "",
+    });
 
     return customActivity;
   }
   private async getOneRandomActivityToUserUsingQuery(
     query: BoredAPIActivityType
-  ): Promise<ActivityWithImage> {
+  ): Promise<IActivity> {
     const boredApiActivity = await getOneRandomActivityWithQuery(query);
     const unsplashImage = await getUnsplashImageWithQuery(
-      boredApiActivity.activity
+      boredApiActivity.activityName
     );
 
-    const customActivity: HobbieExploreActivityWihtImage = {
-      
+    // Crea una nueva instancia del modelo IActivity con los datos combinados de boredApiActivity y unsplashImage
+    const customActivity: IActivity = new ActivityModel({
       ...boredApiActivity,
       ...unsplashImage,
-    };
+      ratingMean: 0,
+      totalReviews: 0,
+      links: [],
+      description: "",
+    });
 
     return customActivity;
   }
-
   private async searchActivitiesWithQuery(
     query: string
   ): Promise<WithId<Document>[]> {
     try {
       const regexQuery = new RegExp(query, "i");
-      const matchedActivities = await db
-        .collection("activities")
-        .find<WithId<Document>>({ activity: regexQuery })
-        .toArray();
+      const matchedActivities = await ActivityModel.find({
+        activityName: regexQuery,
+      })
+        .lean()
+        .exec();
+     
       return matchedActivities;
     } catch (error) {
+      console.log(error);
       throw new Error("Error searching activities by query");
     }
   }
 
-  public getThreeRandomActivitiesToUser = async (): Promise<
-    ActivityWithImage[]
-  > => {
+  public getThreeRandomActivitiesToUser = async (): Promise<IActivity[]> => {
     const promises = Array.from({ length: 3 }, () =>
       this.getOneRandomActivityToUser()
     );
@@ -76,7 +83,7 @@ export class ActivityRepository implements ActivityRepositoryProps {
 
   public getThreeRandomActivitiesToUserWithQuery = async (
     query: BoredAPIActivityType
-  ): Promise<ActivityWithImage[]> => {
+  ): Promise<IActivity[]> => {
     const promises = Array.from({ length: 3 }, () =>
       this.getOneRandomActivityToUserUsingQuery(query)
     );
@@ -88,6 +95,21 @@ export class ActivityRepository implements ActivityRepositoryProps {
     query: string
   ): Promise<WithId<Document>[]> {
     const matchedActivities = await this.searchActivitiesWithQuery(query);
+    console.log(query);
     return matchedActivities;
+  }
+
+  public async retrieveExistingActivitiesFromDb() {
+    getExistingActivities();
+  }
+
+  public async retrieveExistingActivityFromDb(id: string) {
+    try {
+      const existingActivity = await getExistingActivityById(id);
+      return existingActivity;
+    } catch (error) {
+      console.error("Error al obtener la actividad:", error);
+      return null;
+    }
   }
 }
