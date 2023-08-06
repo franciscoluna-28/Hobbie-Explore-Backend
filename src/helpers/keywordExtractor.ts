@@ -1,4 +1,4 @@
-import natural, {
+import {
   BrillPOSTaggedWord,
   BrillPOSTagger,
   Lexicon,
