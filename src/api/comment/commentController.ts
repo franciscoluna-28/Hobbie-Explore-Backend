@@ -10,6 +10,8 @@ export class CommentController {
     this.addNewComment = this.addNewComment.bind(this);
     this.getAllCommentsFromActivity =
       this.getAllCommentsFromActivity.bind(this);
+    this.removeCommentFromActivity = this.removeCommentFromActivity.bind(this);
+    this.editComment = this.editComment.bind(this);
   }
 
   async addNewComment(req: Request, res: Response) {
@@ -32,8 +34,8 @@ export class CommentController {
     try {
       const { activityId } = req.params;
 
-      const commentsFromActivity = await
-        this.commentRepository.getAllCommentsInActivity(activityId);
+      const commentsFromActivity =
+        await this.commentRepository.getAllCommentsInActivity(activityId);
 
       return res.status(200).json(commentsFromActivity);
     } catch (error) {
@@ -41,6 +43,63 @@ export class CommentController {
       return res
         .status(500)
         .json({ error: "Couldn't find comments from existing activity" });
+    }
+  }
+
+  async removeCommentFromActivity(req: Request, res: Response) {
+    try {
+      const { uid, activityId, commentId } = req.params;
+
+      const deleteResult =
+        await this.commentRepository.removeCommentFromActivity(
+          uid,
+          commentId,
+          activityId
+        );
+
+      if (
+        deleteResult &&
+        deleteResult.deletedCount &&
+        deleteResult.deletedCount > 0
+      ) {
+        return res
+          .status(200)
+          .json({ message: "Comment successfully deleted" });
+      } else {
+        return res
+          .status(404)
+          .json({ error: "Comment not found or unable to remove." });
+      }
+    } catch (error) {
+      console.error("There was an error while deleting the comment", error);
+      return res
+        .status(500)
+        .json({ error: "Error while deleting the comment" });
+    }
+  }
+
+  async editComment(req: Request, res: Response) {
+    try {
+      const { uid, activityId, commentId } = req.params;
+      const { newText } = req.body;
+
+      const updatedComment = await this.commentRepository.editComment(
+        uid,
+        commentId,
+        activityId,
+        newText
+      );
+
+      if (updatedComment) {
+        return res.status(200).json(updatedComment);
+      } else {
+        return res
+          .status(404)
+          .json({ error: "Comment not found or unable to edit." });
+      }
+    } catch (error) {
+      console.error("There was an error while editing the comment", error);
+      return res.status(500).json({ error: "Error while editing the comment" });
     }
   }
 }
