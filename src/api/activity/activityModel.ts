@@ -1,8 +1,11 @@
-import { Schema, Document, model } from "mongoose";
+
+import { Schema, Document } from "mongoose";
+import mongoose from 'mongoose';
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
+import paginate from 'mongoose-paginate-v2';
 
 // Interfaz de la actividad con imagen
-export interface IActivity {
+export interface IActivity extends Document{
   activityName: string;
   type: BoredAPIActivityType | string;
   participants: number;
@@ -30,7 +33,7 @@ export interface IActivity {
 }
 
 // Esquema de la actividad con imagen
-const activitySchema = new Schema<IActivity>({
+const ActivitySchema = new Schema<IActivity>({
   activityName: {
     type: String,
     required: true,
@@ -109,7 +112,16 @@ const activitySchema = new Schema<IActivity>({
   },
 });
 
-// Modelo de la actividad con imagen
-export const ActivityModel = model<IActivity>("Activity", activitySchema);
+// Aplicar el plugin de paginación al esquema
+ActivitySchema.plugin(paginate);
+
+// Declarar una interfaz para el documento de actividad (opcional pero recomendado)
+export interface IActivityDocument extends IActivity, Document {}
+
+
+const ActivityModel = mongoose.model<
+  IActivityDocument,
+  mongoose.PaginateModel<IActivityDocument>
+>('Activity', ActivitySchema);
 
 export default ActivityModel;
