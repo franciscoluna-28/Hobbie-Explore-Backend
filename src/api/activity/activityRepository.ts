@@ -1,20 +1,23 @@
+import axios  from 'axios';
 import { WithId, Document } from "mongodb";
-import { IActivity, ActivityModel } from "./activityModel";
+import { IActivity } from "./activityModel";
+import ActivityModel from "./activityModel";
 import {
   getOneRandomActivity,
   getOneRandomActivityWithQuery,
-} from "../boredAPI/getActivitiesFromAPI";
+} from "../boredAPI/getActivitiesFromApi"
 import { getUnsplashImageWithQuery } from "../unsplashImage/getImageWithQuery";
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
 import { getExistingActivities } from "../../utils/getExistingActivities";
 import { getExistingActivityById } from "../../utils/getExistingActivities";
+
 
 interface ActivityRepositoryProps {
   getThreeRandomActivitiesToUser(): Promise<IActivity[]>;
   getThreeRandomActivitiesToUserWithQuery(
     query: BoredAPIActivityType
   ): Promise<IActivity[]>;
-  searchActivityByQuery(query: string): Promise<WithId<Document>[]>;
+  searchActivityByQuery(query: string, page: number): Promise<WithId<Document>[]>;
 }
 
 export class ActivityRepository implements ActivityRepositoryProps {
@@ -55,18 +58,22 @@ export class ActivityRepository implements ActivityRepositoryProps {
 
     return customActivity;
   }
-  private async searchActivitiesWithQuery(
-    query: string
-  ): Promise<WithId<Document>[]> {
+
+  async searchActivityByQuery(query: string, page: number): Promise<WithId<Document>[]> {
     try {
-      const regexQuery = new RegExp(query, "i");
-      const matchedActivities = await ActivityModel.find({
-        activityName: regexQuery,
-      })
-        .lean()
-        .exec();
-     
-      return matchedActivities;
+      const regexQuery = new RegExp(query);
+      const options = {
+        page: page,
+        limit: 10,
+      };
+      const matchedActivities = await ActivityModel.paginate(
+        { activityName: regexQuery },
+        options
+      );
+
+      console.log(matchedActivities)
+
+      return matchedActivities.docs;
     } catch (error) {
       console.log(error);
       throw new Error("Error searching activities by query");
@@ -91,13 +98,7 @@ export class ActivityRepository implements ActivityRepositoryProps {
     return activities;
   };
 
-  public async searchActivityByQuery(
-    query: string
-  ): Promise<WithId<Document>[]> {
-    const matchedActivities = await this.searchActivitiesWithQuery(query);
-    console.log(query);
-    return matchedActivities;
-  }
+
 
   public async retrieveExistingActivitiesFromDb() {
     getExistingActivities();
@@ -112,4 +113,31 @@ export class ActivityRepository implements ActivityRepositoryProps {
       return null;
     }
   }
+
+
+  async downloadActivityImage(url: string) {
+    try {
+      // Realizar la solicitud HTTP para obtener la imagen en formato de array de bytes
+      const response = await axios.get(url, {
+        responseType: "arraybuffer",
+      });
+  
+      // Convertir los datos de la imagen en un objeto Blob
+      const imageBlob = new Blob([response.data], { type: "image/jpeg" });
+  
+      // Crear un enlace de descarga para la imagen
+      const downloadLink = document.createElement("a");
+      downloadLink.href = URL.createObjectURL(imageBlob);
+      downloadLink.download = "activity_image.jpg";
+  
+      // Simular un clic en el enlace de descarga para iniciar la descarga
+      downloadLink.click();
+  
+      // Liberar el objeto URL utilizado para crear el enlace de descarga
+      URL.revokeObjectURL(downloadLink.href);
+    } catch (error) {
+      console.error("There was an error while downloading the image: ", error);
+    }
+  }
+  
 }
