@@ -18,16 +18,12 @@ userRouter.delete(
 userRouter.get(
   "/get-activities-by-user/:uid",
   routerController.getCurrentUserActivities
-);
+); // TODO we shall change the name of this route to get current activities
 userRouter.delete("/delete-user/:uid", routerController.deleteUser);
-/* userRouter.post("/rate-activity", routerController.rateActivity);
-userRouter.post(
-  "/get-rating-in-activity",
-  routerController.getCurrentUserRating
-); */
-/* userRouter.post("/comment-activity", routerController.addCommentToActivity); */
-/* userRouter.post("/get-activity-comments", routerController.getActivityComments)
-userRouter.post("/edit-comment", routerController.editComment) */
+userRouter.get("/get-activities-ids/:uid", routerController.getSavedActivitiesIds)
+userRouter.get("/get-favority-categories/:uid", routerController.getFavorityCategories)
 
-
+// TODO 
+/* Skip watch and learn as keywords
+ */
 export default userRouter;
