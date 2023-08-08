@@ -11,5 +11,6 @@ activityRouter.get(
 );
 activityRouter.get("/search", activityController.searchActivities);
 activityRouter.get("/get-activity-by-id/:id", activityController.getActivityById);
+activityRouter.get("/download-image-from-activity", activityController.downloadActivityImage)
 
 export default activityRouter;
