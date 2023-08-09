@@ -22,6 +22,8 @@ userRouter.get(
 userRouter.delete("/delete-user/:uid", routerController.deleteUser);
 userRouter.get("/get-activities-ids/:uid", routerController.getSavedActivitiesIds)
 userRouter.get("/get-favority-categories/:uid", routerController.getFavorityCategories)
+userRouter.post("/update-description/:uid", routerController.updateUserDescription)
+userRouter.get("/get-description/:uid", routerController.getUserDescription)
 
 // TODO 
 /* Skip watch and learn as keywords
