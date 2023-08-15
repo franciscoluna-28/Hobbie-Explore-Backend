@@ -11,18 +11,17 @@ export interface ActivityWithImage extends ProcessedBoredAPIModifiedActivity {
 }
 
 // Final API reponse to be consumed by the Frontend
-export interface HobbieExploreActivityWihtImage {
-  activityName: string;
+export interface IPredefinedActivity extends Document {
+  name: string;
   type: BoredAPIActivityType | string;
-  blur_hash: string;
   participants: number;
   price: number;
   accessibility: number;
-  activityId: string;
+  _id: string;
   description: string;
-  ratings: [];
-  comments: [];
-  links: any;
+  averageRating: number;
+  reviews: number;
+  listOfLinks: ActivityLink;
   urls: {
     full: string;
     thumb: string;
@@ -40,7 +39,11 @@ export interface HobbieExploreActivityWihtImage {
   };
 }
 
-export type HobbieExploreActivityIDArray = {
+export type IPredefinedActivityIDArray = {
   rating: number;
   id: string;
 };
+
+interface ActivityLink {
+  url: string;
+}
