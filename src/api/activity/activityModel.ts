@@ -1,4 +1,4 @@
-import { Schema, Document } from "mongoose";
+import { Schema, Document, PaginateModel } from "mongoose"; 
 import mongoose from "mongoose";
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
 import paginate from "mongoose-paginate-v2";
@@ -108,10 +108,9 @@ const ActivitySchema = new Schema<IPredefinedActivity>({
   },
 });
 
-// Aplicar el plugin de paginación al esquema
+
 ActivitySchema.plugin(paginate);
 
-// Declarar una interfaz para el documento de actividad (opcional pero recomendado)
 const PredefinedActivityModel = mongoose.model<
   IPredefinedActivity & Document,
   mongoose.PaginateModel<IPredefinedActivity & Document>
