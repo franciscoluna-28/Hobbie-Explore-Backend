@@ -18,7 +18,7 @@ export class UserTokenRepository {
 
     await this.userModel.findOneAndUpdate(
       { uid: uid },
-      { $set: { bearedToken: newToken } }
+      { $set: { bearerToken: newToken } }
     );
 
     return { success: true };
