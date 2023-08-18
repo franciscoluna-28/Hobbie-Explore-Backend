@@ -8,10 +8,11 @@ class FirebaseMiddleware {
     console.log(token);
 
     if (!token) {
-      // No se proporcionó ningún token en el encabezado de autorización
+      // If the user doesn't have any token we send this message
       return res.status(401).json({ message: "Unauthorized! Token missing" });
     }
 
+    // If they have a token, we try to decode it
     try {
       const decodeValue = await admin.auth().verifyIdToken(token);
 
@@ -19,6 +20,7 @@ class FirebaseMiddleware {
         return next();
       }
 
+      // Token for firebase was invalid hence the token is rejected
       return res.status(401).json({ message: "Unauthorized! Invalid token" });
     } catch (error) {
       console.error("Error decoding token:", error);
@@ -28,3 +30,4 @@ class FirebaseMiddleware {
 }
 
 export default FirebaseMiddleware;
+
