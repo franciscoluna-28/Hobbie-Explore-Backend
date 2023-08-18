@@ -42,7 +42,7 @@ export class UserRepository {
     return this.userTokenRepository;
   }
 
-  // Agregar método estático para obtener la instancia única
+  // Singleton pattern
   private static instance: UserRepository;
 
   static getInstance(userModel: Model<IUser>): UserRepository {
