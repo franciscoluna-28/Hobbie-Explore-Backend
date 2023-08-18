@@ -16,7 +16,7 @@ export class UserActionsRepository {
    * Registers a user in the database or updates the existing user if found.
    * @param email - User's email.
    * @param uid - User's UID from Firebase.
-   * @param bearedToken - User's bearer token.
+   * @param bearerToken - User's bearer token.
    * @param photoUrl - URL of user's photo.
    * @param displayName - User's display name.
    * @param emailVerified - Whether the email is verified. Dictated by Firebase.
@@ -27,22 +27,24 @@ export class UserActionsRepository {
   async registerUser(
     email: string,
     uid: string,
-    bearedToken: string,
+    bearerToken: string,
     photoUrl: string,
     displayName: string,
     emailVerified: boolean,
-    disabled: boolean
+    disabled: boolean,
+    createdAt: Date
   ) {
     try {
       const existingUser = await this.userModel.findOneAndUpdate(
         { uid },
         {
           email,
-          bearedToken,
+          bearerToken,
           photoURL: photoUrl,
           displayName,
           emailVerified,
           disabled,
+          createdAt
         },
         { new: true }
       );
@@ -53,19 +55,23 @@ export class UserActionsRepository {
         const newUser = new this.userModel({
           uid,
           email,
-          bearedToken,
+          bearerToken,
           photoURL: photoUrl,
           displayName,
           emailVerified,
           disabled,
-          savedHobbiesAndActivities: [],
+          createdAt
         });
 
+        console.log(newUser)
+
         const result = await newUser.save();
+        console.log(result)
+
         return result;
       }
-    } catch (error) {
-      throw new Error("Could not create/update user document!");
+    } catch (error: any) {
+      throw new Error(error);
     }
   }
 
