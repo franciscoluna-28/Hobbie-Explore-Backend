@@ -22,10 +22,11 @@ export async function getUnsplashImageWithQuery(
 
     //TODO remove the imageId (id in the final type)
     // Picking the first element
-    const { id, urls, user } = results[0];
+    const { id: imageId, urls, user, blur_hash } = results[0];
 
     const myUnsplashImage: ProcessedUnsplashImage = {
-      id,
+      imageId,
+      blur_hash,
       urls: extractUrls(urls),
       user: extractUser(user),
     };
