@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { UserActionsRepository } from "../repository/userActionsRepository";
-import { Model } from "mongoose";
-import { IUser } from "../../../types/userTypes";
+import { UserRepository } from "../repository/userRepository";
+import { GlobalUserRepository } from "../repository/userRepository";
 
 interface CRUDController {
   create(req: Request, res: Response): Promise<void>;
@@ -11,17 +11,19 @@ interface CRUDController {
 export class UserActionsController implements CRUDController {
   private static instance: UserActionsController;
   private userActionsRepository: UserActionsRepository;
+  private userRepository: UserRepository;
 
-  private constructor(userModel: Model<IUser>) {
-    this.userActionsRepository = new UserActionsRepository(userModel);
+  private constructor() {
+    this.userRepository = GlobalUserRepository;
+    this.userActionsRepository = this.userRepository.getUserActionsRepository();
     this.create = this.create.bind(this);
     this.delete = this.delete.bind(this);
   }
 
   // Singleton pattern to use only one instance of the controller
-  static getInstance(userModel: Model<IUser>): UserActionsController {
+  static getInstance(): UserActionsController {
     if (!UserActionsController.instance) {
-      UserActionsController.instance = new UserActionsController(userModel);
+      UserActionsController.instance = new UserActionsController();
     }
     return UserActionsController.instance;
   }

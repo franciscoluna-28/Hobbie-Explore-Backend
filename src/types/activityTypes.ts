@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { BoredAPIActivityType } from "./boredAPITypes";
 
 interface ActivityLink {
