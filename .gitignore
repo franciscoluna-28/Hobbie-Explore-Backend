@@ -1,3 +1,32 @@
+# Node.js / Express
+node_modules/
+
+# Build output
+dist/
+
+# Environment variables
 .env
+
+# IDE specific files
+.vscode/
+
+# Logs
+*.log
+
+# Compiled TypeScript
+*.js
+
+# Dependency directories
+# https://docs.npmjs.com/misc/developers#keeping-files-out-of-your-package
 node_modules
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# Application specific files
 admin.json
+db.txt
+
