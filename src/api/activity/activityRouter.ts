@@ -6,12 +6,12 @@ const activityController = new ActivityController();
 
 activityRouter.get("/random", activityController.getThreeRandomActivities);
 activityRouter.get(
-  "/random-with-query/:type",
+  "/random/:type",
   activityController.getThreeRandomActivitiesWithQuery
 );
 activityRouter.get("/search", activityController.searchActivities);
 activityRouter.get(
-  "/get-activity-by-id/:id",
+  "/activity-by-id/:id",
   activityController.getActivityById
 );
 activityRouter.get(
@@ -19,8 +19,19 @@ activityRouter.get(
   activityController.downloadActivityImage
 );
 activityRouter.get(
-  "/get-three-activities-from-db-with-type",
+  "/three-activities-from-db-with-type",
   activityController.recommendThreeRandomDefaultDBActivities
 );
+
+// TODO let users create their own activities
+
+// TODO create a HOC to handle with both the actitivities from bored and the custom activities
+
+// TODO add route to get only activities with description in the specified category
+
+// TODO add route to get only activities from users in the specified category
+
+// TODO add route to get the highest qualified activities within a range
+// And deal with the conditional rendering of the pagination 
 
 export default activityRouter;
