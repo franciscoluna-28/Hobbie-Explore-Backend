@@ -3,10 +3,7 @@ import axios from "axios";
 import { WithId, Document } from "mongodb";
 import { IActivityCard } from "../../types/activityTypes";
 import ActivityModel from "./activityModel";
-import {
-  getOneRandomActivity,
-  getOneRandomActivityWithQuery,
-} from "../boredAPI/getActivitiesFromApi";
+import { getOneRandomActivity, getOneRandomActivityWithQuery } from "../boredAPI/getActivitiesFromAPI";
 import { getUnsplashImageWithQuery } from "../unsplashImage/getImageWithQuery";
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
 import { getExistingActivities } from "../../utils/getExistingActivities";

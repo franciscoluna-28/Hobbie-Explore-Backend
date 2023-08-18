@@ -24,7 +24,7 @@
         "dotenv": "^16.3.1",
         "firebase-admin": "^11.9.0",
         "mongodb": "^5.6.0",
-        "mongoose": "^7.3.1",
+        "mongoose": "^7.4.3",
         "mongoose-paginate-v2": "^1.7.31",
         "natural": "^6.5.0",
         "stopword": "^2.0.8",
