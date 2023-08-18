@@ -15,8 +15,8 @@ import { extractLinkFromBored } from "./extractAndFilterValues";
 function transformBoredAPIKeyToId(
   response: AxiosResponse<DefaultBoredAPIActivity>
 ): BoredAPIModifiedActivity {
-  const { key, ...modifiedActivity } = response.data;
-  return { ...modifiedActivity, activityId: key };
+  const { key, activity, ...modifiedActivity } = response.data;
+  return { ...modifiedActivity, name: activity, id: key };
 }
 
 async function getRandomActivity(
@@ -28,7 +28,7 @@ async function getRandomActivity(
 
   const response = await axios.get(url);
   const modifiedActivity = transformBoredAPIKeyToId(response);
-  return extractLinkFromBored(modifiedActivity);
+  return extractLinkFromBored(modifiedActivity)
 }
 
 export async function getOneRandomActivity() {
