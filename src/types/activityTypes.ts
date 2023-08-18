@@ -1,49 +1,55 @@
-import {
-  BoredAPIActivityType,
-  BoredAPIModifiedActivity,
-  ProcessedBoredAPIModifiedActivity,
-} from "./boredAPITypes";
-import { ProcessedUnsplashImage } from "./unsplashAPITypes";
+import { BoredAPIActivityType } from "./boredAPITypes";
 
-// Type to be used by the final API
-export interface ActivityWithImage extends ProcessedBoredAPIModifiedActivity {
-  image?: ProcessedUnsplashImage;
+interface ActivityLink {
+  url: string;
 }
 
-// Final API reponse to be consumed by the Frontend
-export interface IPredefinedActivity extends Document {
+interface User {
+  name: string;
+  username: string;
+  links: {
+    html: string;
+  };
+  profile_image: {
+    medium: string;
+  };
+}
+
+export interface BasePredefinedActivity {
   name: string;
   type: BoredAPIActivityType | string;
+  imageId: string;
+  blur_hash: string;
   participants: number;
   price: number;
   accessibility: number;
-  _id: string;
-  description: string;
+  id: string;
   averageRating: number;
   reviews: number;
-  listOfLinks: ActivityLink;
   urls: {
     full: string;
     thumb: string;
     regular: string;
   };
-  user: {
-    name: string;
-    username: string;
-    links: {
-      html: string;
-    };
-    profile_image: {
-      medium: string;
-    };
-  };
+  user: User;
 }
 
-export type IPredefinedActivityIDArray = {
+export interface IPredefinedActivityNoDocument extends BasePredefinedActivity {
+  description: string;
+  listOfLinks: ActivityLink;
+}
+
+export interface IPredefinedActivity extends BasePredefinedActivity {
+  description: string;
+  listOfLinks: ActivityLink;
+}
+
+export type IActivityCard = Omit<
+  IPredefinedActivityNoDocument,
+  "description" | "listOfLinks"
+>;
+
+export interface IPredefinedActivityIDArray {
   rating: number;
   id: string;
-};
-
-interface ActivityLink {
-  url: string;
 }

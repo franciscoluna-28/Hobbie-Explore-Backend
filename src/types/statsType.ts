@@ -1,0 +1,1 @@
+export type CategoryCounts = { [category: string]: number };
