@@ -1,65 +1,85 @@
-import axios  from 'axios';
+import { RatingRepository } from "./../rating/ratingRepository";
+import axios from "axios";
 import { WithId, Document } from "mongodb";
-import { IActivity } from "./activityModel";
+import { IActivityCard } from "../../types/activityTypes";
 import ActivityModel from "./activityModel";
 import {
   getOneRandomActivity,
   getOneRandomActivityWithQuery,
-} from "../boredAPI/getActivitiesFromApi"
+} from "../boredAPI/getActivitiesFromApi";
 import { getUnsplashImageWithQuery } from "../unsplashImage/getImageWithQuery";
 import { BoredAPIActivityType } from "../../types/boredAPITypes";
 import { getExistingActivities } from "../../utils/getExistingActivities";
 import { getExistingActivityById } from "../../utils/getExistingActivities";
 
-
-interface ActivityRepositoryProps {
-  getThreeRandomActivitiesToUser(): Promise<IActivity[]>;
+interface PredefinedActivityProps {
+  getThreeRandomActivitiesToUser(): Promise<IActivityCard[]>;
   getThreeRandomActivitiesToUserWithQuery(
     query: BoredAPIActivityType
-  ): Promise<IActivity[]>;
-  searchActivityByQuery(query: string, page: number): Promise<WithId<Document>[]>;
+  ): Promise<IActivityCard[]>;
+  searchActivityByQuery(
+    query: string,
+    page: number
+  ): Promise<WithId<Document>[]>;
 }
 
-export class ActivityRepository implements ActivityRepositoryProps {
-  private async getOneRandomActivityToUser(): Promise<IActivity> {
+export class ActivityRepository implements PredefinedActivityProps {
+  private ratingRepository: RatingRepository;
+
+  constructor(ratingRepository: RatingRepository) {
+    this.ratingRepository = ratingRepository;
+  }
+
+  private async getOneRandomActivityToUser(): Promise<IActivityCard> {
     const boredApiActivity = await getOneRandomActivity();
     const unsplashImage = await getUnsplashImageWithQuery(
-      boredApiActivity.activityName
+      boredApiActivity.name
     );
 
-    const customActivity: IActivity = new ActivityModel({
+    const { ratingsLength, averageRatingToFixed: averageRating } =
+      await this.ratingRepository.getNumberOfReviewsAndAverageRating(
+        boredApiActivity.id
+      );
+
+    const customActivity: IActivityCard = {
       ...boredApiActivity,
       ...unsplashImage,
-      ratingMean: 0,
-      totalReviews: 0,
-      links: [],
-      description: "",
-    });
+      averageRating: averageRating,
+      reviews: ratingsLength,
+    };
 
     return customActivity;
   }
   private async getOneRandomActivityToUserUsingQuery(
     query: BoredAPIActivityType
-  ): Promise<IActivity> {
+  ): Promise<IActivityCard> {
     const boredApiActivity = await getOneRandomActivityWithQuery(query);
     const unsplashImage = await getUnsplashImageWithQuery(
-      boredApiActivity.activityName
+      boredApiActivity.name
     );
 
-    // Crea una nueva instancia del modelo IActivity con los datos combinados de boredApiActivity y unsplashImage
-    const customActivity: IActivity = new ActivityModel({
+    // Crea una nueva instancia del modelo IActivityCard con los datos combinados de boredApiActivity y unsplashImage
+    const { ratingsLength, averageRatingToFixed: averageRating } =
+      await this.ratingRepository.getNumberOfReviewsAndAverageRating(
+        boredApiActivity.id
+      );
+
+    const customActivity: IActivityCard = {
       ...boredApiActivity,
       ...unsplashImage,
-      ratingMean: 0,
-      totalReviews: 0,
-      links: [],
-      description: "",
-    });
+      averageRating: averageRating,
+      reviews: ratingsLength,
+    };
 
     return customActivity;
   }
 
-  async searchActivityByQuery(query: string, page: number): Promise<WithId<Document>[]> {
+  // Function search one activity with query using pagination to avoid
+  // Bad perfomance
+  async searchActivityByQuery(
+    query: string,
+    page: number
+  ): Promise<WithId<Document>[]> {
     try {
       const regexQuery = new RegExp(query);
       const options = {
@@ -71,7 +91,7 @@ export class ActivityRepository implements ActivityRepositoryProps {
         options
       );
 
-      console.log(matchedActivities)
+      console.log(matchedActivities);
 
       return matchedActivities.docs;
     } catch (error) {
@@ -80,7 +100,9 @@ export class ActivityRepository implements ActivityRepositoryProps {
     }
   }
 
-  public getThreeRandomActivitiesToUser = async (): Promise<IActivity[]> => {
+  public getThreeRandomActivitiesToUser = async (): Promise<
+    IActivityCard[]
+  > => {
     const promises = Array.from({ length: 3 }, () =>
       this.getOneRandomActivityToUser()
     );
@@ -90,7 +112,7 @@ export class ActivityRepository implements ActivityRepositoryProps {
 
   public getThreeRandomActivitiesToUserWithQuery = async (
     query: BoredAPIActivityType
-  ): Promise<IActivity[]> => {
+  ): Promise<IActivityCard[]> => {
     const promises = Array.from({ length: 3 }, () =>
       this.getOneRandomActivityToUserUsingQuery(query)
     );
@@ -98,8 +120,7 @@ export class ActivityRepository implements ActivityRepositoryProps {
     return activities;
   };
 
-
-
+  // Function to get all the existing activities from the db
   public async retrieveExistingActivitiesFromDb() {
     getExistingActivities();
   }
@@ -114,30 +135,49 @@ export class ActivityRepository implements ActivityRepositoryProps {
     }
   }
 
-
   async downloadActivityImage(url: string) {
     try {
       // Realizar la solicitud HTTP para obtener la imagen en formato de array de bytes
       const response = await axios.get(url, {
         responseType: "arraybuffer",
       });
-  
+
       // Convertir los datos de la imagen en un objeto Blob
       const imageBlob = new Blob([response.data], { type: "image/jpeg" });
-  
+
       // Crear un enlace de descarga para la imagen
       const downloadLink = document.createElement("a");
       downloadLink.href = URL.createObjectURL(imageBlob);
       downloadLink.download = "activity_image.jpg";
-  
+
       // Simular un clic en el enlace de descarga para iniciar la descarga
       downloadLink.click();
-  
+
       // Liberar el objeto URL utilizado para crear el enlace de descarga
       URL.revokeObjectURL(downloadLink.href);
     } catch (error) {
       console.error("There was an error while downloading the image: ", error);
     }
   }
-  
+
+  // Function used to get random activities from the DB using their specified type
+  // Meaning that if the target activity is Sports, we get only activities
+  // With the sports type
+  // This save resources because we're not using any external API
+  async recommendThreeActivitiesFromDBAndWithType(type: string) {
+    try {
+      const activitiesWithSpecifiedCategory = await ActivityModel.aggregate([
+        { $match: { type: type } },
+        { $sample: { size: 3 } },
+      ]);
+
+      return activitiesWithSpecifiedCategory;
+    } catch (error) {
+      console.error(
+        "An error occurred while retrieving activities from the DB:",
+        error
+      );
+      throw error;
+    }
+  }
 }
