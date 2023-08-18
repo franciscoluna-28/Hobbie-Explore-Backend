@@ -1,12 +1,39 @@
-import { Router } from "express";
-import { UserController } from "./userController";
+  import { UserActivitiesController } from './controller/userActivitiesController';
+  import { Router } from "express";
+  import { UserActionsController } from "./controller/userActionsController";
+  import { UserStatsController } from './controller/userStatsController';
+  import UserModel from "./userModel";
 
-const userRouter = Router();
+  const userRouter = Router();
 
-const routerController = new UserController();
+  // Creating a single instance to the user actions controller
+  const userActionsController = UserActionsController.getInstance(UserModel);
+  const userActivitiesController = UserActivitiesController.getInstance(UserModel);
+  const userStatsController = new UserStatsController(UserModel);
 
-userRouter.post("/register-user", routerController.registerUser);
-userRouter.post("/register-user-token/:uid", routerController.addTokenToUser);
+  // User - actions routes
+  userRouter.post("/register", userActionsController.create);
+  userRouter.delete("/delete/:uid", userActionsController.delete);
+
+  // User - activities routes
+  userRouter.get("/default-activities/:uid", userActivitiesController.getUserHobbyExploreActivities);  
+  userRouter.delete("/delete-default-activity/:uid", userActivitiesController.deleteActivityFromUser);
+  userRouter.post("/save-default-activity/:uid", userActivitiesController.addActivityToUser);
+  userRouter.get("/is-saved/:uid", userActivitiesController.checkIfActivityIsSaved);
+
+  // User - stats routes
+  userRouter.get("/global-favorite-categories/:uid", userStatsController.getFavoriteCategories);
+  userRouter.get("/global-stats/:uid", userStatsController.getUserTotalStats);
+
+  export default userRouter;
+
+
+
+
+
+
+
+/* userRouter.post("/register-user-token/:uid", routerController.addTokenToUser);
 userRouter.post(
   "/add-activity-to-user/:uid",
   routerController.addActivityToUser
@@ -18,14 +45,14 @@ userRouter.delete(
 userRouter.get(
   "/get-activities-by-user/:uid",
   routerController.getCurrentUserActivities
-); // TODO we shall change the name of this route to get current activities
-userRouter.delete("/delete-user/:uid", routerController.deleteUser);
+);
+
 userRouter.get("/get-activities-ids/:uid", routerController.getSavedActivitiesIds)
 userRouter.get("/get-favority-categories/:uid", routerController.getFavorityCategories)
 userRouter.post("/update-description/:uid", routerController.updateUserDescription)
-userRouter.get("/get-description/:uid", routerController.getUserDescription)
+userRouter.get("/get-description/:uid", routerController.getUserDescription) */
 
 // TODO 
 /* Skip watch and learn as keywords
  */
-export default userRouter;
+
