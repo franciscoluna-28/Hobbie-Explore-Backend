@@ -26,7 +26,7 @@ const ruleSet = new RuleSet(naturalSettings.language);
 // Getting the best keyword using Natural
 export function getBestKeyword(sentence: BoredAPIModifiedActivity): string {
   const tokenizer = new RegexpTokenizer({ pattern: / / });
-  const tokens = tokenizer.tokenize(sentence.activity.toLowerCase());
+  const tokens = tokenizer.tokenize(sentence.name.toLowerCase());
 
   // We get the tokens back but if they're empty we get an empty string
   return tokens && tokens.length > 0 ? processTokens(tokens) : "";
