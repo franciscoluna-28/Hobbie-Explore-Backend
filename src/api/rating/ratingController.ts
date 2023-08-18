@@ -20,6 +20,8 @@ export class RatingController {
         activityId,
         rating
       );
+
+      console.log(activityToRate)
       return res.status(200).json(activityToRate);
     } catch (error) {
       console.error("Error while rating activity:", error);
@@ -33,10 +35,6 @@ export class RatingController {
     try {
       const { uid, activityId } = req.body;
 
-      console.log(uid)
-      console.log(activityId)
-
-    
 
       const currentActivityRatingByUser =
         await this.ratingRepository.getUserRatingInActivity(uid, activityId);

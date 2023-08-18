@@ -79,7 +79,8 @@ export class RatingRepository {
       const averageRating =
         reviews.length > 0 ? totalRating / reviews.length : 0;
 
-      const averageRatingToFixed = averageRating.toFixed(2);
+      const averageRatingToFixed = Number(averageRating.toFixed(2));
+
 
       const ratingsLength = reviews.length;
 
