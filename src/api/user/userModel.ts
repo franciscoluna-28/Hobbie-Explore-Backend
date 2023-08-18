@@ -1,10 +1,30 @@
 import { Schema, Document } from "mongoose";
 import mongoose from "mongoose";
-import { HobbieExploreUser } from "../../types/userTypes";
-import HobbieExploreActivityWithImage from "../activity/activityModel";
+import { IUser } from "../../types/userTypes";
+import paginate from "mongoose-paginate-v2";
+
+/**
+
+  Interface for representing a user
+  @extends Document
+  @property {string} uid -(Required) Unique identifier of the user
+  @property {string|null} email - (Required) Email address of the user
+  @property {boolean} emailVerified - Whether the user's email address has been verified
+  @property {string|null} displayName - Display name of the user
+  @property {string|null} photoURL - Photo URL of the user
+  @property {boolean} disabled - Whether the user is disabled
+  @property {string} bearerToken - (Required) Bearer token of the user
+  @property {[{string}]} savedDefaultActivities -  Default activities that the user is interested in
+  @property {[{string}]} createdActivities - Activities that the user has created
+  @property {[{string}]} savedUserActivities - Saved activities from other users
+  @property {string} description - Description of the user 
+  @property {[{string}]} friends - List of friends within the app
+  @property {boolean} isAccountPrivated - Whether the account is privated or not
+  @property {Date} createdAt - (Required) Identifies the date of creation of a user
+  */
 
 // User schema
-const userSchema = new Schema<HobbieExploreUser>({
+const UserSchema = new Schema<IUser>({
   uid: {
     type: String,
     required: true,
@@ -12,83 +32,62 @@ const userSchema = new Schema<HobbieExploreUser>({
   },
   email: {
     type: String,
-    required: false,
+    required: true,
     unique: true,
-    nullable: true,
+  },
+  displayName: {
+    type: String,
+    default: "Anonymous user",
+  },
+  photoURL: {
+    type: String,
+    default: null,
   },
   emailVerified: {
     type: Boolean,
     required: true,
+    default: false,
   },
-  displayName: {
+  savedDefaultActivities: [{
     type: String,
-    required: false,
-    nullable: true,
-  },
-  photoURL: {
+    default: ""
+  }],
+  createdActivities: [{
     type: String,
-    required: false,
-    nullable: true,
-  },
-  phoneNumber: {
+    default: ""
+  }],
+  friends: [{
     type: String,
-    required: false,
-    nullable: true,
+    default: ""
+  }],
+  bearerToken: {
+    type: String,
+    required: true,
   },
   disabled: {
     type: Boolean,
+  },
+  description: {
+    type: String,
+    default: "",
+    required: false
+  },
+  createdAt: {
+    type: String,
     required: true,
   },
-  metadata: {
-    creationTime: {
-      type: String,
-      required: false,
-      nullable: true,
-    },
-    lastSignInTime: {
-      type: String,
-      required: false,
-      nullable: true,
-    },
-  },
-  providerData: [
-    {
-      uid: {
-        type: String,
-        required: true,
-      },
-      displayName: {
-        type: String,
-        required: false,
-        nullable: true,
-      },
-      email: {
-        type: String,
-        required: false,
-        nullable: true,
-      },
-      photoURL: {
-        type: String,
-        required: false,
-        nullable: true,
-      },
-      phoneNumber: {
-        type: String,
-        required: false,
-        nullable: true,
-      },
-      providerId: {
-        type: String,
-        required: true,
-      },
-    },
-  ],
-  savedHobbiesAndActivities: {
-    type: [HobbieExploreActivityWithImage.schema], // Uso del tipo de la actividad en el campo
-    default: [],
-  },
+  isAccountPrivated: {
+    type: Boolean,
+    default: false
+  }
 });
 
-const User = mongoose.model<HobbieExploreUser>("User", userSchema);
+// Using the pagination plugin within the user schema
+UserSchema.plugin(paginate);
 
-export default User;
+const UserModel = mongoose.model<
+  IUser & Document,
+  mongoose.PaginateModel<IUser & Document>
+>("User", UserSchema);
+
+export default UserModel;
