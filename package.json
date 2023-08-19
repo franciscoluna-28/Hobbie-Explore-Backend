@@ -17,7 +17,6 @@
         "dev": "ts-node-dev src/server.ts",
         "build": "tsc",
         "start": "node ./dist/server.js"
-        
     },
     "dependencies": {
         "@types/cors": "^2.8.13",
