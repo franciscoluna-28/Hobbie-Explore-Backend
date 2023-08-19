@@ -1,37 +1,29 @@
-import { Router } from "express";
-import { ActivityController } from "./activityController";
+  import { Router } from "express";
+import { PredefinedActivitiesDBController } from "./pre-defined-activity/controller/pre-defined-activities-db-controller";
+import { PredefinedActivitiesController } from "./pre-defined-activity/controller/pre-defined-activities-random-controller";
+import { downloadImageHandler } from "../../utils/download-image-handler";
 
 const activityRouter = Router();
-const activityController = new ActivityController();
+const predefinedActivitiesDBController = new PredefinedActivitiesDBController();
+const predefinedActivitiesController = new PredefinedActivitiesController();
 
-activityRouter.get("/random", activityController.getThreeRandomActivities);
+activityRouter.get(
+  "/random",
+  predefinedActivitiesController.getThreeRandomActivities
+);
 activityRouter.get(
   "/random/:type",
-  activityController.getThreeRandomActivitiesWithQuery
+  predefinedActivitiesController.getThreeRandomActivitiesWithQuery
 );
-activityRouter.get("/search", activityController.searchActivities);
-activityRouter.get(
+/* activityRouter.get("/search", activityController.searchActivities) */ activityRouter.get(
   "/activity-by-id/:id",
-  activityController.getActivityById
+  predefinedActivitiesDBController.getActivityById
 );
-activityRouter.get(
-  "/download-image-from-activity",
-  activityController.downloadActivityImage
-);
+activityRouter.get("/download-image-from-activity", downloadImageHandler);
 activityRouter.get(
   "/three-activities-from-db-with-type",
-  activityController.recommendThreeRandomDefaultDBActivities
+  predefinedActivitiesDBController.recommendThreeRandomDefaultDBActivities
 );
 
-// TODO let users create their own activities
-
-// TODO create a HOC to handle with both the actitivities from bored and the custom activities
-
-// TODO add route to get only activities with description in the specified category
-
-// TODO add route to get only activities from users in the specified category
-
-// TODO add route to get the highest qualified activities within a range
-// And deal with the conditional rendering of the pagination 
 
 export default activityRouter;

@@ -7,7 +7,7 @@
   const userRouter = Router();
 
   // Creating a single instance to the user actions controller
-  const userActionsController = UserActionsController.getInstance(UserModel);
+  const userActionsController = UserActionsController.getInstance();
   const userActivitiesController = UserActivitiesController.getInstance(UserModel);
   const userStatsController = new UserStatsController(UserModel);
 
