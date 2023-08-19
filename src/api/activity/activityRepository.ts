@@ -1,4 +1,4 @@
-import { RatingRepository } from "./../rating/ratingRepository";
+/* import { RatingRepository } from "./../rating/ratingRepository";
 import axios from "axios";
 import { WithId, Document } from "mongodb";
 import { IActivityCard } from "../../types/activityTypes";
@@ -178,3 +178,4 @@ export class ActivityRepository implements PredefinedActivityProps {
     }
   }
 }
+ */
