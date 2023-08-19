@@ -14,8 +14,9 @@ const serviceAccount: ServiceAccount | any = {
   universe_domain: process.env.UNIVERSE_DOMAIN,
 };
 
-console.log(serviceAccount)
-console.log(process.env.DATABASE_URI)
+
+
+
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
