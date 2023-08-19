@@ -13,9 +13,10 @@ const app: Application = express();
 const firebaseMiddleware = new Middleware(); 
 
 // Proper middleware setup
-dotenv.config();
+
 app.use(express.json());
 app.use(cors());
+dotenv.config();
 /* app.use(firebaseMiddleware.decodeToken) */
 
 
