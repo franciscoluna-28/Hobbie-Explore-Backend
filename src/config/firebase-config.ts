@@ -14,10 +14,6 @@ const serviceAccount: ServiceAccount | any = {
   universe_domain: process.env.UNIVERSE_DOMAIN,
 };
 
-
-
-
-
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });

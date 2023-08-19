@@ -51,7 +51,9 @@ export class UserActionsController implements CRUDController {
         emailVerified,
         disabled,
         createdAt
-      );
+      ); 
+      
+      console.log(result);
 
       res.status(201).json(result);
     } catch (error) {
