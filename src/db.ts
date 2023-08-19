@@ -1,7 +1,8 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv"
 
+dotenv.config();
 
-console.log("WORK PLEASE DB URL: ", process.env.DATABASE_URI)
 // Mongoose Connection
 mongoose.connect(process.env.DATABASE_URI!, {
   dbName: process.env.DB_NAME,
