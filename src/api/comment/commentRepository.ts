@@ -47,7 +47,6 @@ export class CommentRepository {
   }
 
   async getAllCommentsInActivity(activityId: string) {
-    console.log(activityId);
 
     try {
       const activityComments = await CommentModel.find({
@@ -62,7 +61,6 @@ export class CommentRepository {
   async removeCommentFromActivity(
     uid: string,
     _id: string,
-    activityId: string
   ) {
     try {
       const currentUser = await UserModel.findOne({ uid: uid });
@@ -75,7 +73,6 @@ export class CommentRepository {
       const currentCommentToDelete = await CommentModel.deleteOne({
         userUid: uid,
         _id: _id,
-        activityId: activityId,
       });
 
       if (
@@ -96,7 +93,6 @@ export class CommentRepository {
   async editComment(
     uid: string,
     _id: string,
-    activityId: string,
     newText: string
   ) {
     try {
@@ -111,7 +107,6 @@ export class CommentRepository {
       // Buscar el comentario que se desea editar por su '_id', 'activityId' y 'userUid'.
       const currentComment = await CommentModel.findOne({
         _id: _id,
-        activityId: activityId,
         userUid: uid,
       });
 
