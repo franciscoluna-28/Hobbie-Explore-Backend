@@ -20,7 +20,8 @@ const ratingSchema = new Schema<IUserRating>({
     max: 5,
   },
   activityId: {
-    type: String,
+    type: String, 
+    ref: "PredefinedActivity",
     required: true,
   },
 });
