@@ -48,14 +48,15 @@ export class CommentController {
 
   async removeCommentFromActivity(req: Request, res: Response) {
     try {
-      const { uid, activityId, commentId } = req.params;
-
+      const { uid, commentId } = req.params;    
+      console.log(commentId, uid)
       const deleteResult =
         await this.commentRepository.removeCommentFromActivity(
           uid,
           commentId,
-          activityId
         );
+
+
 
       if (
         deleteResult &&
@@ -80,13 +81,14 @@ export class CommentController {
 
   async editComment(req: Request, res: Response) {
     try {
-      const { uid, activityId, commentId } = req.params;
+      const { uid, commentId } = req.params;
       const { newText } = req.body;
+
+      console.log(newText);
 
       const updatedComment = await this.commentRepository.editComment(
         uid,
         commentId,
-        activityId,
         newText
       );
 
