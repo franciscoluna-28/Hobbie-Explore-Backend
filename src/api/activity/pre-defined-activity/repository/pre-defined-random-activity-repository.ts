@@ -1,4 +1,3 @@
-import { Model } from "mongoose";
 import {
   IPredefinedActivity,
   IActivityCard,

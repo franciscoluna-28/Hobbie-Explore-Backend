@@ -58,7 +58,7 @@ const ActivitySchema = new Schema<IPredefinedActivity>({
   },
   averageRating: {
     type: Number,
-    default: 0,
+    default: 0 ,
   },
   reviews: {
     type: Number,
