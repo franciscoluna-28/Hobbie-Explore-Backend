@@ -2,6 +2,7 @@ import RatingModel, { IUserRating } from "./ratingModel";
 import UserModel from "../user/userModel";
 import { IUser } from "../../types/userTypes";
 import ActivityModel from "../activity/activityModel";
+import PredefinedActivityModel from "../activity/activityModel";
 
 export class RatingRepository {
   async rateActivity(uid: string, activityId: string, rating: number) {
@@ -11,13 +12,15 @@ export class RatingRepository {
 
       if (!currentUser) {
         throw new Error("User not found");
-      }
+      } 
 
       // Verificar si el rating ya existe para esta actividad y usuario
       const existingRating = await RatingModel.findOne({
         userId: currentUser._id,
         activityId,
       });
+
+      console.log(existingRating);
 
       if (existingRating) {
         // Si el rating ya existe, actualizar el rating existente con el nuevo valor
@@ -31,13 +34,17 @@ export class RatingRepository {
           rating,
         });
 
-        console.log(newRating);
+        console.log("NEW RATINGS IS", newRating);
         await newRating.save();
       }
 
       console.log(
         `User with UID ${uid} rated activity ${activityId} with ${rating} stars.`
       );
+
+      await this.getNumberOfReviewsAndAverageRating(activityId);
+
+      return rating; // Retorna el nuevo rating
     } catch (error) {
       console.error("Error while rating activity:", error);
       throw new Error("An error occurred while rating the activity");
@@ -68,8 +75,6 @@ export class RatingRepository {
 
   async getNumberOfReviewsAndAverageRating(activityId: string) {
     try {
-      console.log(activityId);
-
       const reviews = await RatingModel.find({ activityId: activityId });
 
       const totalRating = reviews.reduce(
@@ -81,20 +86,23 @@ export class RatingRepository {
 
       const averageRatingToFixed = Number(averageRating.toFixed(2));
 
-
       const ratingsLength = reviews.length;
 
       console.log(totalRating, averageRatingToFixed, ratingsLength);
 
-      await ActivityModel.updateOne(
-        { activityId: activityId },
+      const res = await PredefinedActivityModel.updateOne(
+        { id: activityId },
         {
           $set: {
-            ratingMean: averageRating,
-            totalReviews: ratingsLength,
+            averageRating: averageRating,
+            reviews: ratingsLength,
           },
         }
       );
+
+      console.log(res)
+
+
 
       return { reviews, averageRatingToFixed, ratingsLength };
     } catch (error) {
