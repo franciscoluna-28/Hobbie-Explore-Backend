@@ -6,9 +6,11 @@ export class RatingController {
 
   constructor() {
     this.ratingRepository = new RatingRepository();
+
     this.rateActivity = this.rateActivity.bind(this);
     this.getCurrentUserRating = this.getCurrentUserRating.bind(this);
-    this.getReviewsAndAverageRating = this.getReviewsAndAverageRating.bind(this);
+    this.getReviewsAndAverageRating =
+      this.getReviewsAndAverageRating.bind(this);
   }
 
   async rateActivity(req: Request, res: Response) {
@@ -21,7 +23,7 @@ export class RatingController {
         rating
       );
 
-      console.log(activityToRate)
+      console.log("ID IS", activityToRate);
       return res.status(200).json(activityToRate);
     } catch (error) {
       console.error("Error while rating activity:", error);
@@ -33,13 +35,10 @@ export class RatingController {
 
   async getCurrentUserRating(req: Request, res: Response) {
     try {
-      const { uid, activityId } = req.body;
-
+      const { uid, activityId } = req.params;
 
       const currentActivityRatingByUser =
         await this.ratingRepository.getUserRatingInActivity(uid, activityId);
-
-      
 
       return res.status(200).json(currentActivityRatingByUser);
     } catch (error) {
