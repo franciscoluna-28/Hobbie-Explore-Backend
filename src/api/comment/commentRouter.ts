@@ -10,11 +10,11 @@ commentRouter.get(
   commentController.getAllCommentsFromActivity
 );
 commentRouter.delete(
-  "/remove-comment-from-activity/:uid/:activityId/:commentId",
+  "/remove-comment-from-activity/:uid/:commentId",
   commentController.removeCommentFromActivity
 );
 commentRouter.post(
-  "/edit-comment-from-activity/:uid/:activityId/:commentId",
+  "/edit-comment-from-activity/:uid/:commentId",
   commentController.editComment
 );
 
