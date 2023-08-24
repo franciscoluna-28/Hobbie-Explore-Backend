@@ -10,6 +10,7 @@ import commentRouter from "./api/comment/commentRouter";
 // Starting the application
 const app: Application = express();
 
+// Todo implement the firebase middleware
 const firebaseMiddleware = new Middleware(); 
 
 // Proper middleware setup
