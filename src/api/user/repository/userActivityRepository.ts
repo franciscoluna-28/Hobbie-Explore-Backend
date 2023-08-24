@@ -137,12 +137,12 @@ export class UserActivityRepository {
         throw new Error("User not found");
       }
 
-      const activityIds = currentUser.savedDefaultActivities.map(
-        (activity: any) => activity.id
-      );
+      const activityIds = currentUser.savedDefaultActivities;
+
+      console.log(activityIds);
 
       const activities = await ActivityModel.paginate(
-        { activityId: { $in: activityIds } },
+        { id: { $in: activityIds } },
         options
       );
 
