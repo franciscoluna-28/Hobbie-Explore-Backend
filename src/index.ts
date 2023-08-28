@@ -1,8 +1,8 @@
 import express, { Application, Router } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import activityRouter from "./api/activity/activityRouter";
-import Middleware from "./middlewares/firebaseValidation";
+import activityRouter from "./api/activity/default-activity-router";
+import Middleware from "./middlewares/firebase-validation";
 import userRouter from "./api/user/userRouter";
 import ratingRouter from "./api/rating/ratingRouter";
 import commentRouter from "./api/comment/commentRouter";
