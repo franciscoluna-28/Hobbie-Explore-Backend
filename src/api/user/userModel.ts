@@ -48,18 +48,30 @@ const UserSchema = new Schema<IUser>({
     required: true,
     default: false,
   },
-  savedDefaultActivities: [{
-    type: String,
-    default: ""
-  }],
-  createdActivities: [{
-    type: String,
-    default: ""
-  }],
-  friends: [{
-    type: String,
-    default: ""
-  }],
+  savedDefaultActivities: [
+    {
+      type: String,
+      default: "",
+    },
+  ],
+  savedCustomActivities: [
+    {
+      type: String,
+      default: "",
+    },
+  ],
+  createdActivities: [
+    {
+      type: String,
+      default: "",
+    },
+  ],
+  friends: [
+    {
+      type: String,
+      default: "",
+    },
+  ],
   bearerToken: {
     type: String,
     required: true,
@@ -70,7 +82,7 @@ const UserSchema = new Schema<IUser>({
   description: {
     type: String,
     default: "",
-    required: false
+    required: false,
   },
   createdAt: {
     type: String,
@@ -78,8 +90,8 @@ const UserSchema = new Schema<IUser>({
   },
   isAccountPrivated: {
     type: Boolean,
-    default: false
-  }
+    default: false,
+  },
 });
 
 // Using the pagination plugin within the user schema
