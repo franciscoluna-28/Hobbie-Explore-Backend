@@ -1,8 +1,8 @@
-  import { Document } from "mongoose";
+import { Document } from "mongoose";
 
-  // User to be inserted into the database
+// User to be inserted into the database
 
-  /**
+/**
 
   Interface for representing a user
   @extends Document
@@ -22,7 +22,7 @@
   @property {Date} createdAt - Identifies the date of creation of a user
   */
 
-  /** Fields provided by Firebase when registering
+/** Fields provided by Firebase when registering
   @property {string} uid 
   @property {string|null} email 
   @property {boolean} emailVerified 
@@ -33,41 +33,41 @@
   @property {Date} createdAt - Identifies the date of creation of a user
   */
 
-  /** Fields that can be modified by the user
+/** Fields that can be modified by the user
   @property {boolean} isAccountPrivated 
   @property {string} description 
   */
 
-  /** Fields that can be modified within the app
+/** Fields that can be modified within the app
   @property {[{string}]} friends 
   @property {[{string}]} savedUserActivities 
   @property {[{string}]} savedDefaultActivities 
   @property {[{string}]} createdActivities 
   */
 
-  /** Can be changed when login with Google
+/** Can be changed when login with Google
   @property {boolean} emailVerified - To true
   @property {string|null} displayName - To the name of the user in Google
   @property {string|null} photoURL - To the photo provided by Google
   */
 
-  /** Changes after logout and login
+/** Changes after logout and login
   @property {string} bearerToken 
   */
 
-  export interface IUser extends Document {
-    uid: string;
-    email?: string | null;
-    emailVerified: boolean;
-    displayName?: string | null;
-    photoURL?: string | null;
-    disabled: boolean;
-    bearerToken: string;
-    savedDefaultActivities: [id: string];
-    createdActivities: [{ id: string }];
-    savedUserActivities: [{ id: string }];
-    description: string;
-    isAccountPrivated: boolean;
-    friends: [{ id: string }];
-    createdAt: string;
-  }
+export interface IUser extends Document {
+  uid: string;
+  email?: string | null;
+  emailVerified: boolean;
+  displayName?: string | null;
+  photoURL?: string | null;
+  disabled: boolean;
+  bearerToken: string;
+  savedDefaultActivities: [id: string];
+  createdActivities: [{ id: string }];
+  savedCustomActivities: [{ id: string }];
+  description: string;
+  isAccountPrivated: boolean;
+  friends: [{ id: string }];
+  createdAt: string;
+}
