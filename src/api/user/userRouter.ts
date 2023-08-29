@@ -20,18 +20,18 @@ userRouter.post("/register", userActionsController.create);
 userRouter.delete("/delete/:uid", userActionsController.delete);
 
 // User - activities routes
-userRouter.get(
+/* userRouter.get(
   "/default-activities/:uid",
   userActivitiesController.getUserHobbyExploreActivities
-);
+); */
 userRouter.delete(
   "/delete-default-activity/:uid",
   userActivitiesController.deleteActivityFromUser
 );
-userRouter.post(
+/* userRouter.post(
   "/save-default-activity/:uid",
   userActivitiesController.addActivityToUser
-);
+); */
 userRouter.get(
   "/is-saved/:uid",
   userActivitiesController.checkIfActivityIsSaved
