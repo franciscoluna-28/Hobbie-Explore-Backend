@@ -1,8 +1,8 @@
 import RatingModel, { IUserRating } from "./ratingModel";
 import UserModel from "../user/userModel";
 import { IUser } from "../../types/userTypes";
-import ActivityModel from "../activity/activityModel";
-import PredefinedActivityModel from "../activity/activityModel";
+import ActivityModel from "../activity/default-activity-model";
+import PredefinedActivityModel from "../activity/default-activity-model";
 
 export class RatingRepository {
   async rateActivity(uid: string, activityId: string, rating: number) {
