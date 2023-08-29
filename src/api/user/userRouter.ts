@@ -4,6 +4,7 @@ import { UserActionsController } from "./controller/userActionsController";
 import { UserStatsController } from "./controller/userStatsController";
 import UserModel from "./userModel";
 import { UserDescriptionController } from "./controller/userDescriptionController";
+import { UserTokenController } from "./controller/userTokenController";
 
 // Instance Controller
 const userRouter = Router();
@@ -14,6 +15,7 @@ const userActivitiesController =
   UserActivitiesController.getInstance(UserModel);
 const userStatsController = new UserStatsController(UserModel);
 const userDescriptionController = new UserDescriptionController();
+const userTokenController = new UserTokenController(UserModel);
 
 // User - actions routes
 userRouter.post("/register", userActionsController.create);
@@ -54,6 +56,9 @@ userRouter.patch(
   userDescriptionController.updateUserDescription
 );
 
-
+userRouter.post(
+  "/register-user-token/:uid",
+  userTokenController.giveTokenToUser
+);
 
 export default userRouter;
