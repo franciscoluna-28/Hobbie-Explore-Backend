@@ -19,6 +19,8 @@ export interface BoredAPIModifiedActivity {
   price: number;
   accessibility: number;
 }
+
+// After removing the link thingy
 export interface ProcessedBoredAPIModifiedActivity {
   name: string;
   type: string;
@@ -29,14 +31,6 @@ export interface ProcessedBoredAPIModifiedActivity {
 }
 
 // Available categories for Bored API
-export enum BoredAPIActivityType {
-  Education = "education",
-  Recreational = "recreational",
-  Social = "social",
-  DIY = "diy",
-  Charity = "charity",
-  Cooking = "cooking",
-  Relaxation = "relaxation",
-  Music = "music",
-  Busywork = "busywork",
-}
+
+
+export type BoredAPIActivityType = "education" | "recreational" | "social" | "diy" | "charity" | "cooking" | "relaxation" | "music" | "busywork";
