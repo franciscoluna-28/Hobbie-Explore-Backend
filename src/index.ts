@@ -6,20 +6,32 @@ import Middleware from "./middlewares/firebase-validation";
 import userRouter from "./api/user/userRouter";
 import ratingRouter from "./api/rating/ratingRouter";
 import commentRouter from "./api/comment/commentRouter";
+import morgan from "morgan";
 
 // Starting the application
 const app: Application = express();
 
-// Todo implement the firebase middleware
-const firebaseMiddleware = new Middleware(); 
+// Cors middleware to make sure the API is accesible for other services
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 
-// Proper middleware setup
-
+// Body parser middleware
 app.use(express.json());
-app.use(cors());
-dotenv.config();
-/* app.use(firebaseMiddleware.decodeToken) */
 
+// Create a new instance of the Firebase middleware
+const firebaseMiddleware = new Middleware();
+
+// Firebase middleware checking the user token to handle authentication
+app.use(firebaseMiddleware.decodeToken);
+
+// Environment variables setup
+dotenv.config();
+
+// Logger to use to test the HTTP requests
+app.use(morgan("tiny"));
 
 // Create the main API router
 const apiRouter: Router = Router();
