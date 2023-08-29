@@ -8,7 +8,7 @@ import {
 import { BoredAPIModifiedActivity } from "../types/boredAPITypes";
 import { removeStopwords, eng } from "stopword";
 
-// Settings for natural
+// Settings for natural.js
 const naturalSettings = {
   language: "EN",
   defaultCategory: "N",
