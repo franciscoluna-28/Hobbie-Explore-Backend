@@ -16,10 +16,13 @@ export class UserTokenRepository {
       return { error: "User not found" };
     }
 
+    console.log("new token is: ", newToken)
+
     await this.userModel.findOneAndUpdate(
       { uid: uid },
       { $set: { bearerToken: newToken } }
     );
+
 
     return { success: true };
   }
