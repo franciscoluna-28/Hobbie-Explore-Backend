@@ -14,12 +14,14 @@ import {
 } from "../../../../types/boredAPITypes";
 import DefaultActivityModel from "../../default-activity-model";
 
-// Default activity random repository
+const numberOfActivitiesToCreate = 6;
+
+/**
+ * Repository for generating random activities.
+ */
 export class DefaultRandomActivityRepository {
   private ratingRepository: RatingRepository;
 
-  // TODO: Apply singeton to this instance
-  // We initialize an instance of the rating repository
   constructor() {
     this.ratingRepository = new RatingRepository();
   }
@@ -39,37 +41,40 @@ export class DefaultRandomActivityRepository {
     name: string
   ): Promise<IPredefinedActivity> {
     try {
-      // Check if the activity exists in the database using the queryId or name
       const existingActivity = await DefaultActivityModel.findOne({
         $or: [{ id: queryId }, { name: name }],
       });
 
-      // If it exists, we get it from the database to avoid making unnecessary queries
-      // API calls to Unsplash.
       if (existingActivity) {
         console.log(`Fetched activity from: Database`);
         console.log(
           `Duplicated activity with name: ${name}. It won't be added to the DB...`
         );
-
         return existingActivity;
       }
 
-      // If the activity is not found in the database, meaning that it doesn't exist yet
-      // We get the image from Unsplash and create the actual activity
+      // Check if an activity with the same name exists in the database
+      const activityWithSameName = await DefaultActivityModel.findOne({
+        name: name,
+      });
+
+      if (activityWithSameName) {
+        console.log(
+          `An activity with name "${name}" already exists in the database. Skipping...`
+        );
+        return activityWithSameName;
+      }
+
       const boredApiActivity = await getActivityFunction();
       const unsplashImage = await getUnsplashImageWithQuery(
         boredApiActivity.name
       );
 
-      // And since it's a new activity, we verify the ratings in case they exits
-      // EX: Using an old version of the API
       const { ratingsLength, averageRatingToFixed: averageRating } =
         await this.ratingRepository.getNumberOfReviewsAndAverageRating(
           boredApiActivity.id
         );
 
-      // Create the new activity with its respective model
       const newActivity = new DefaultActivityModel({
         ...boredApiActivity,
         ...unsplashImage,
@@ -78,17 +83,14 @@ export class DefaultRandomActivityRepository {
         reviews: ratingsLength,
       });
 
-      // Save activity in the DB and retrieve it at the end
       await newActivity.save();
 
       console.log(`Saved new activity from: API`);
       return newActivity;
     } catch (error) {
-      // If the external API requests fail, get up to 3 random activities from the database
       console.error("Error:", error);
-
       const dbActivities = await DefaultActivityModel.aggregate([
-        { $sample: { size: 3 } },
+        { $sample: { size: numberOfActivitiesToCreate } },
       ]);
 
       console.log(`Fetched activities from: Database`);
@@ -99,31 +101,23 @@ export class DefaultRandomActivityRepository {
   /**
    * Gets a random activity for the user using information from the BoredAPI.
    *
+   * @param {BoredAPIActivityType} query - Optional query type from BoredAPI.
    * @returns {Promise<IPredefinedActivity>} A promise resolving to a user-ready activity.
    * @throws {Error} If there's an issue fetching or processing the activity.
    */
-  private async getOneRandomActivityToUser(): Promise<IPredefinedActivity> {
-    const myActivity = getOneRandomActivity();
-    const activityId = (await myActivity).id;
-    const activityName = (await myActivity).name;
-
-    // And we use its information to use our helper function
-    return this.fetchAndGenerateActivity(
-      getOneRandomActivity,
-      activityId,
-      activityName
-    );
-  }
-  // Function to get one activity to the user but using a query
-  // The queries are the types from BoredAPI
   private async getOneRandomActivityToUserUsingQuery(
     query: BoredAPIActivityType
-  ): Promise<IActivityCard> {
-    const myActivity = getOneRandomActivityWithQuery(query);
-    const activityId = (await myActivity).id;
-    const activityName = (await myActivity).name;
+  ): Promise<IPredefinedActivity> {
+    let fetchedActivity;
+    let activityId;
+    let activityName;
 
-    // We use our helper function too here to get the final activity
+    do {
+      fetchedActivity = await getOneRandomActivityWithQuery(query);
+      activityId = fetchedActivity.id;
+      activityName = fetchedActivity.name;
+    } while (await this.checkIfActivityExists(activityId, activityName));
+
     return this.fetchAndGenerateActivity(
       getOneRandomActivityWithQuery.bind(null, query),
       activityId,
@@ -131,20 +125,74 @@ export class DefaultRandomActivityRepository {
     );
   }
 
-  // Generate a list with the different activities obtained
+  private async checkIfActivityExists(
+    queryId: string,
+    name: string
+  ): Promise<boolean> {
+    const existingActivity = await DefaultActivityModel.findOne({
+      $or: [{ id: queryId }, { name: name }],
+    });
+    return !!existingActivity;
+  }
+
+  /**
+   * Generates a list of random activities using the provided generator function.
+   *
+   * @param {Function} generatorFunction - The function to generate a single activity.
+   * @returns {Promise<IPredefinedActivity[]>} A promise resolving to an array of activities.
+   */
   private async generateActivityList(
-    generatorFunction: () => Promise<IActivityCard>
-  ): Promise<IActivityCard[]> {
-    const promises = Array.from({ length: 3 }, generatorFunction);
+    generatorFunction: () => Promise<IPredefinedActivity>
+  ): Promise<IPredefinedActivity[]> {
+    const promises = Array.from(
+      { length: numberOfActivitiesToCreate },
+      generatorFunction
+    );
     return Promise.all(promises);
   }
 
-  // Create three activities using the generateActivityList function
-  public getThreeRandomActivitiesToUser = async (): Promise<
-    IActivityCard[]
-  > => {
-    return this.generateActivityList(
-      this.getOneRandomActivityToUser.bind(this)
+  /**
+   * Gets a single random activity for the user using the provided function and query.
+   *
+   * @param {Function} getActivityFunction - The function to retrieve a random activity.
+   * @param {BoredAPIActivityType} query - Optional query type from BoredAPI.
+   * @returns {Promise<IPredefinedActivity>} A promise resolving to a user-ready activity.
+   */
+  private async getRandomActivityToUser(
+    getActivityFunction: () => Promise<ProcessedBoredAPIModifiedActivity>,
+    query: BoredAPIActivityType
+  ): Promise<IPredefinedActivity> {
+    const activity = await getActivityFunction();
+    const activityId = activity.id;
+    const activityName = activity.name;
+
+    if (query) {
+      return this.getOneRandomActivityToUserUsingQuery(query);
+    } else {
+      return this.fetchAndGenerateActivity(
+        getActivityFunction,
+        activityId,
+        activityName
+      );
+    }
+  }
+
+  /**
+   * Generates an array of three random activities for the user.
+   *
+   * @param {BoredAPIActivityType} query - Optional query type from BoredAPI.
+   * @returns {Promise<IPredefinedActivity[]>} A promise resolving to an array of activities.
+   */
+  public getThreeRandomActivitiesToUser = async (
+    query?: BoredAPIActivityType
+  ): Promise<IPredefinedActivity[]> => {
+    return this.generateActivityList(() =>
+      this.getRandomActivityToUser(
+        query
+          ? getOneRandomActivityWithQuery.bind(null, query)
+          : getOneRandomActivity,
+        query!
+      )
     );
   };
 
