@@ -7,6 +7,7 @@ export class UserTokenRepository {
 
   constructor(userModel: Model<IUser>) {
     this.userModel = userModel;
+    this.giveTokenToUser = this.giveTokenToUser.bind(this);
   }
 
   async giveTokenToUser(uid: string, newToken: string) {

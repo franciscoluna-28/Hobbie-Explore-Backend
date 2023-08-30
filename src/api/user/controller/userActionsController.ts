@@ -42,6 +42,8 @@ export class UserActionsController implements CRUDController {
         createdAt,
       } = req.body;
 
+      console.log(email, uid, bearerToken, photoUrl, displayName, emailVerified, disabled, createdAt);
+
       const result = await this.userActionsRepository.registerUser(
         email,
         uid,
@@ -53,7 +55,7 @@ export class UserActionsController implements CRUDController {
         createdAt
       ); 
       
-      console.log(result);
+        console.log("result is: " + result);
 
       res.status(201).json(result);
     } catch (error) {
