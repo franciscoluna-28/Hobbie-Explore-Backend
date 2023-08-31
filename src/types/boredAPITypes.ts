@@ -13,7 +13,6 @@ export interface DefaultBoredAPIActivity {
 export interface BoredAPIModifiedActivity {
   link: string;
   name: string;
-  id: string;
   type: string;
   participants: number;
   price: number;
@@ -24,7 +23,6 @@ export interface BoredAPIModifiedActivity {
 export interface ProcessedBoredAPIModifiedActivity {
   name: string;
   type: string;
-  id: string;
   participants: number;
   price: number;
   accessibility: number;
