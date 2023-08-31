@@ -63,11 +63,11 @@ export interface IUser extends Document {
   photoURL?: string | null;
   disabled: boolean;
   bearerToken: string;
-  savedDefaultActivities: [id: string];
-  createdActivities: [{ id: string }];
-  savedCustomActivities: [{ id: string }];
+  savedDefaultActivities: string[];
+  createdActivities: string[];
+  savedCustomActivities: string[];
   description: string;
   isAccountPrivated: boolean;
-  friends: [{ id: string }];
+  friends: string[];
   createdAt: string;
 }
