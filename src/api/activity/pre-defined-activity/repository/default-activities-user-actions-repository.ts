@@ -165,13 +165,16 @@ export default class DefaultActivityUserActionsRepository {
       // Return an empty array in case the user doesn't have saved activities
       const activityIds = currentUser.savedDefaultActivities || [];
 
+      console.log(activityIds)
       // Use pagination to handle the user's activities passing the options
       // Paginate is exactly the same as a find method, except that this one
       // Supports pagination out of the box
       const activities = await DefaultActivityModel.paginate(
-        { id: { $in: activityIds } },
+        { _id: { $in: activityIds } },
         options
       );
+
+      console.log(activities);
 
       return activities;
     } catch (error) {
