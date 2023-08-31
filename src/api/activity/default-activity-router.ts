@@ -47,4 +47,9 @@ defaultActivityRouter.post(
   defaultUserActivitiesController.addActivityToUser
 );
 
+defaultActivityRouter.get(
+  "/is-saved/:uid",
+  defaultUserActivitiesController.checkIfActivityIsSaved
+);
+
 export default defaultActivityRouter;
