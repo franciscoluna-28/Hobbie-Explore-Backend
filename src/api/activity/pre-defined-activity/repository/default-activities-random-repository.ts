@@ -20,12 +20,6 @@ const numberOfActivitiesToCreate = 6;
  * Repository for generating random activities.
  */
 export class DefaultRandomActivityRepository {
-  private ratingRepository: RatingRepository;
-
-  constructor() {
-    this.ratingRepository = new RatingRepository();
-  }
-
   /**
    * Fetches a random activity from the API, processes it, and returns it for the user.
    *
@@ -37,14 +31,12 @@ export class DefaultRandomActivityRepository {
    */
   private async fetchAndGenerateActivity(
     getActivityFunction: () => Promise<ProcessedBoredAPIModifiedActivity>,
-    queryId: string,
     name: string
   ): Promise<IPredefinedActivity> {
     try {
       const existingActivity = await DefaultActivityModel.findOne({
-        $or: [{ id: queryId }, { name: name }],
+        name: name,
       });
-
       if (existingActivity) {
         console.log(`Fetched activity from: Database`);
         console.log(
@@ -70,31 +62,22 @@ export class DefaultRandomActivityRepository {
         boredApiActivity.name
       );
 
-      const { ratingsLength, averageRatingToFixed: averageRating } =
-        await this.ratingRepository.getNumberOfReviewsAndAverageRating(
-          boredApiActivity.id
-        );
-
       const newActivity = new DefaultActivityModel({
         ...boredApiActivity,
         ...unsplashImage,
-        id: queryId,
-        averageRating: averageRating,
-        reviews: ratingsLength,
+        averageRating: 0,
+        reviews: 0,
       });
 
       await newActivity.save();
 
-      console.log(`Saved new activity from: API`);
+      console.log(`Saved new activity from: API with name ${name}`);
       return newActivity;
     } catch (error) {
+      // TODO: Avoid getting duplicated activities from the database
       console.error("Error:", error);
-      const dbActivities = await DefaultActivityModel.aggregate([
-        { $sample: { size: numberOfActivitiesToCreate } },
-      ]);
-
-      console.log(`Fetched activities from: Database`);
-      return dbActivities as any;
+      const randomActivity = DefaultActivityModel.findOne({});
+      return randomActivity as any;
     }
   }
 
@@ -109,28 +92,22 @@ export class DefaultRandomActivityRepository {
     query: BoredAPIActivityType
   ): Promise<IPredefinedActivity> {
     let fetchedActivity;
-    let activityId;
     let activityName;
 
     do {
       fetchedActivity = await getOneRandomActivityWithQuery(query);
-      activityId = fetchedActivity.id;
       activityName = fetchedActivity.name;
-    } while (await this.checkIfActivityExists(activityId, activityName));
+    } while (await this.checkIfActivityExists(activityName));
 
     return this.fetchAndGenerateActivity(
       getOneRandomActivityWithQuery.bind(null, query),
-      activityId,
       activityName
     );
   }
 
-  private async checkIfActivityExists(
-    queryId: string,
-    name: string
-  ): Promise<boolean> {
+  private async checkIfActivityExists(name: string): Promise<boolean> {
     const existingActivity = await DefaultActivityModel.findOne({
-      $or: [{ id: queryId }, { name: name }],
+      name: name,
     });
     return !!existingActivity;
   }
@@ -163,17 +140,12 @@ export class DefaultRandomActivityRepository {
     query: BoredAPIActivityType
   ): Promise<IPredefinedActivity> {
     const activity = await getActivityFunction();
-    const activityId = activity.id;
     const activityName = activity.name;
 
     if (query) {
       return this.getOneRandomActivityToUserUsingQuery(query);
     } else {
-      return this.fetchAndGenerateActivity(
-        getActivityFunction,
-        activityId,
-        activityName
-      );
+      return this.fetchAndGenerateActivity(getActivityFunction, activityName);
     }
   }
 
