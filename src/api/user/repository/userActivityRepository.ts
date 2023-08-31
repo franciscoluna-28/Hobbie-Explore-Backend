@@ -1,4 +1,4 @@
-  import { IUser } from "./../../../types/userTypes";
+/*   import { IUser } from "./../../../types/userTypes";
   import { Model } from "mongoose";
   import { IPredefinedActivityIDArray } from "../../../types/activityTypes";
   import { IPredefinedActivity } from "../../../types/activityTypes";
@@ -149,3 +149,4 @@
       }
     }
   }
+ */
