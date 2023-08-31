@@ -23,7 +23,6 @@ export class UserTokenController {
 
     try {
       const result = await this.userTokenRepository.giveTokenToUser(uid, bearedToken);
-      console.log(result);
       
       if ("error" in result) {
         return res.status(400).json({ error: result.error });
