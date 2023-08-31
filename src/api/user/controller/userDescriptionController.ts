@@ -28,6 +28,7 @@ export class UserDescriptionController {
 
   getUserDescription = async (req: Request, res: Response) => {
     const { uid } = req.params;
+    console.log(uid);
 
     try {
       const description = await this.userDescriptionRepository.getUserDescription(uid);
