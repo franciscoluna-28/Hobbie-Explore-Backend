@@ -50,7 +50,7 @@ userRouter.get(
   userDescriptionController.getUserDescription
 );
 userRouter.patch(
-  "/description/:uid",
+  "/update-description/:uid",
   userDescriptionController.updateUserDescription
 );
 
