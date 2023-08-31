@@ -8,10 +8,7 @@ const DefaultActivitySchema = new Schema<IPredefinedActivity>({
   name: {
     type: String,
     required: true,
-  },
-  id: {
-    type: String,
-    required: true,
+    unique: true,
   },
   imageId: {
     type: String,
@@ -20,6 +17,7 @@ const DefaultActivitySchema = new Schema<IPredefinedActivity>({
   type: {
     type: String,
     required: true,
+    
   },
   participants: {
     type: Number,
