@@ -8,8 +8,7 @@ export function extractLinkFromBored(activity: BoredAPIModifiedActivity) {
     participants,
     price,
     accessibility,
-    id,
   } = activity;
 
-  return { name, type, participants, price, accessibility, id };
+  return { name, type, participants, price, accessibility };
 }
