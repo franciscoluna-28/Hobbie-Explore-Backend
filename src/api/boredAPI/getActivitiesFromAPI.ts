@@ -15,8 +15,8 @@ import { extractLinkFromBored } from "./extractAndFilterValues";
 function transformBoredAPIKeyToId(
   response: AxiosResponse<DefaultBoredAPIActivity>
 ): BoredAPIModifiedActivity {
-  const { key, activity, ...modifiedActivity } = response.data;
-  return { ...modifiedActivity, name: activity, id: key };
+  const { activity, ...modifiedActivity } = response.data;
+  return { ...modifiedActivity, name: activity };
 }
 
 async function getRandomActivity(

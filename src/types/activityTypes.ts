@@ -24,7 +24,6 @@ export interface BasePredefinedActivity {
   participants: number;
   price: number;
   accessibility: number;
-  id: string;
   averageRating: number;
   reviews: number;
   urls: {

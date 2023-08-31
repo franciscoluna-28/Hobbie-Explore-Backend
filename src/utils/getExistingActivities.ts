@@ -18,15 +18,7 @@ export const getExistingActivities = async () => {
 
 export const getExistingActivityById = async <T>(ActivityModel: Model<T>, id: string): Promise<T | null> => {
   try {
-    const activity = await ActivityModel.findOne({ id: id });
-
-    if (!activity) {
-      // If the activity isn't saved in the DB, then we save it
-      const newActivity = new ActivityModel({ id: id, /* any other necessary properties */ });
-      await newActivity.save();
-      return newActivity;
-    }
-
+    const activity = await ActivityModel.findOne({ _id: id });
     return activity;
   } catch (error) {
     console.error("Error al obtener la actividad:", error);
