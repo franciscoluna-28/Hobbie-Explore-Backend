@@ -18,8 +18,6 @@ export default class DefaultActivityUserActionsRepository {
     this.userModel = userModel;
   }
 
-  // TODO: Change the logic. We don't want to delete an object but the index
-
   /**
    * Removes an activity from a user's savedDefaultActivities list.
    * @param {IUser} user - The user from which to remove the activity.
@@ -31,7 +29,7 @@ export default class DefaultActivityUserActionsRepository {
     try {
       await this.userModel.updateOne(
         { uid: user.uid },
-        { $pull: { savedDefaultActivities: { id: id } } }
+        { $pull: { savedDefaultActivities: id } }
       );
     } catch (error) {
       console.error("Error removing activity from user:", error);
@@ -165,7 +163,7 @@ export default class DefaultActivityUserActionsRepository {
       // Return an empty array in case the user doesn't have saved activities
       const activityIds = currentUser.savedDefaultActivities || [];
 
-      console.log(activityIds)
+      console.log(activityIds);
       // Use pagination to handle the user's activities passing the options
       // Paginate is exactly the same as a find method, except that this one
       // Supports pagination out of the box
