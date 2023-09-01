@@ -44,37 +44,38 @@ const UserSchema = new Schema<IUser>({
     default: null,
   },
   emailVerified: {
-    type: Boolean,
     required: true,
+    type: Boolean,
     default: false,
   },
   savedDefaultActivities: [
     {
       type: String,
-      default: "",
+      default: [],
     },
   ],
   savedCustomActivities: [
     {
       type: String,
-      default: "",
+      default: [],
     },
   ],
   createdActivities: [
     {
       type: String,
-      default: "",
+      default: [],
     },
   ],
   friends: [
     {
       type: String,
-      default: "",
+      default: [],
     },
   ],
   bearerToken: {
     type: String,
     required: true,
+
   },
   disabled: {
     type: Boolean,
@@ -87,6 +88,7 @@ const UserSchema = new Schema<IUser>({
   createdAt: {
     type: String,
     required: true,
+
   },
   isAccountPrivated: {
     type: Boolean,
