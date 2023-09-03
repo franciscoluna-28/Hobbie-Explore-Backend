@@ -1,2 +1,2 @@
-# hobby-explore-backend
-## Oficial API Documentation
+
+# Official Hobby Explore API Documentation
