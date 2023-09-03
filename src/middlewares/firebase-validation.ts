@@ -25,7 +25,7 @@ class FirebaseMiddleware {
       return res.status(401).json({ message: "Unauthorized! Invalid token" });
     } catch (error) {
       console.error("Error decoding token:", error);
-      return res.status(500).json({ message: "Internal error" });
+      return res.status(401).json({ message: "Firebase ID Token has expired." });
     }
   }
 }
