@@ -24,13 +24,11 @@ export class DefaultActivityController {
    * @param _req The Express request object.
    * @param res The Express response object.
    */
-  public getThreeRandomActivities = async (
-    _req: Request,
-    res: Response
-  ): Promise<void> => {
+  public getThreeRandomActivities = async (req: Request, res: Response): Promise<void> => {
     try {
-      const activities =
-        await this.randomActivities.getThreeRandomActivitiesToUser();
+      const type = req.query.type as BoredAPIActivityType;
+      console.log("type is", type)
+      const activities = await this.randomActivities.getThreeRandomActivitiesToUser(type);
       res.json(activities);
     } catch (error) {
       console.error("Error retrieving random activities:", error);
@@ -43,22 +41,4 @@ export class DefaultActivityController {
    * @param req The Express request object containing the activity type parameter.
    * @param res The Express response object.
    */
-  public getThreeRandomActivitiesWithQuery = async (
-    req: Request,
-    res: Response
-  ): Promise<void> => {
-    try {
-      const type = req.params.type as BoredAPIActivityType;
-      const activities =
-        await this.randomActivities.getThreeRandomActivitiesToUserWithQuery(
-          type
-        );
-      res.json(activities);
-    } catch (error) {
-      console.error("Error retrieving random activities with query:", error);
-      res
-        .status(500)
-        .json({ error: "Failed to retrieve random activities with query" });
-    }
-  };
 }
