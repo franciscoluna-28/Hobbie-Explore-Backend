@@ -54,7 +54,7 @@ export class RatingController {
 
   async getReviewsAndAverageRating(req: Request, res: Response) {
     try {
-      const { activityId } = req.body;
+      const { activityId } = req.params;
 
       const { averageRatingToFixed, ratingsLength } =
         await this.ratingRepository.getNumberOfReviewsAndAverageRating(
