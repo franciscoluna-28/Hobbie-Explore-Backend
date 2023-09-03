@@ -30,5 +30,13 @@ export interface ProcessedBoredAPIModifiedActivity {
 
 // Available categories for Bored API
 
-
-export type BoredAPIActivityType = "education" | "recreational" | "social" | "diy" | "charity" | "cooking" | "relaxation" | "music" | "busywork";
+export type BoredAPIActivityType =
+  | "education"
+  | "recreational"
+  | "social"
+  | "diy"
+  | "charity"
+  | "cooking"
+  | "relaxation"
+  | "music"
+  | "busywork" | "all";
