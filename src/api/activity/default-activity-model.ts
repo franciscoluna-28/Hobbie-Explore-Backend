@@ -1,4 +1,4 @@
-import { Schema, Document, PaginateModel } from "mongoose";
+import { Schema, Document } from "mongoose";
 import mongoose from "mongoose";
 import paginate from "mongoose-paginate-v2";
 import { IPredefinedActivity } from "../../types/activityTypes";
@@ -9,6 +9,7 @@ const DefaultActivitySchema = new Schema<IPredefinedActivity>({
     type: String,
     required: true,
     unique: true,
+    index: true,
   },
   imageId: {
     type: String,
@@ -17,7 +18,7 @@ const DefaultActivitySchema = new Schema<IPredefinedActivity>({
   type: {
     type: String,
     required: true,
-    
+    index: true, // Add an index to the type field
   },
   participants: {
     type: Number,
