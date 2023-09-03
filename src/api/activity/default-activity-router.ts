@@ -3,6 +3,7 @@ import { DefaultActivityFromDBController } from "./pre-defined-activity/controll
 import { DefaultActivityController } from "./pre-defined-activity/controller/default-activity-random-controller";
 import { downloadImageHandler } from "../../utils/download-image-handler";
 import { DefaultActivitiesUserController } from "./pre-defined-activity/controller/default-activity-user-actions-controller";
+import cacheMiddleware from "../../middlewares/cache-middleware";
 
 const defaultActivityRouter = Router();
 const predefinedActivitiesDBController = new DefaultActivityFromDBController();
@@ -12,13 +13,9 @@ const defaultUserActivitiesController = new DefaultActivitiesUserController();
 // Random activities
 defaultActivityRouter.get(
   "/random",
+  cacheMiddleware,
   predefinedActivitiesController.getThreeRandomActivities
 );
-defaultActivityRouter.get(
-  "/random/:type",
-  predefinedActivitiesController.getThreeRandomActivitiesWithQuery
-);
-
 defaultActivityRouter.get(
   "/three-activities-from-db-with-type",
   predefinedActivitiesDBController.recommendThreeRandomDefaultDBActivities
