@@ -1,35 +1,19 @@
-import DefaultActivityModel from "../../default-activity-model";
+import { createFetchUniqueActivities } from "../../utils/fetch-unique-items";
 import { BoredAPIActivityType } from "../../../../types/boredAPITypes";
 import { IPredefinedActivity } from "../../../../types/activityTypes";
-
-const numberOfActivitiesToCreate = 6;
-
-/**
- * Repository for generating random activities.
- */
+import { Model } from "mongoose";
+import { RANDOM_ACTIVITIES_VALUE } from "../../../constants/number-of-activities";
 export class DefaultRandomActivityRepository {
   fetchedActivityIds: Set<string>;
+  fetchUniqueActivities: (type?: BoredAPIActivityType) => Promise<IPredefinedActivity[]>;
 
-  constructor() {
+  constructor(model: Model<IPredefinedActivity>) {
     this.fetchedActivityIds = new Set();
+    this.fetchUniqueActivities = createFetchUniqueActivities<IPredefinedActivity, Model<IPredefinedActivity>>(
+      model, RANDOM_ACTIVITIES_VALUE
+    );
   }
 
-  async fetchUniqueActivities(type?: BoredAPIActivityType): Promise<IPredefinedActivity[]> {
-    const aggregationQuery = type ? { type } : {};
-
-    try {
-      const uniqueActivities: IPredefinedActivity[] = await DefaultActivityModel.aggregate([
-        { $match: aggregationQuery },
-        { $sample: { size: numberOfActivitiesToCreate } },
-      ]);
-
-      return uniqueActivities;
-    } catch (error) {
-      console.error("Error fetching unique activities:", error);
-      return [];
-    }
-  }
-  
   async getThreeRandomActivitiesToUser(type?: BoredAPIActivityType): Promise<IPredefinedActivity[]> {
     this.resetFetchedActivityIds();
     return this.fetchUniqueActivities(type);
