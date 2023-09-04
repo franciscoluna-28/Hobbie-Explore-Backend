@@ -1,12 +1,13 @@
 import express, { Application, Router } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import activityRouter from "./api/activity/default-activity-router";
+import activityRouter from "./api/activity/pre-defined-activity/default-activity-router";
 import Middleware from "./middlewares/firebase-validation";
 import userRouter from "./api/user/userRouter";
 import ratingRouter from "./api/rating/ratingRouter";
 import commentRouter from "./api/comment/commentRouter";
 import morgan from "morgan";
+import customActivityRouter from "./api/activity/activities-by-users/custom-activity-router";
 
 // Starting the application
 const app: Application = express();
@@ -41,6 +42,7 @@ apiRouter.use("/user", userRouter);
 apiRouter.use("/rating", ratingRouter);
 apiRouter.use("/activity", activityRouter);
 apiRouter.use("/comment", commentRouter);
+apiRouter.use("/activity", customActivityRouter);
 
 // Application is under /api path
 app.use("/api", apiRouter);
