@@ -1,10 +1,6 @@
 import { Document } from "mongoose";
 import { BoredAPIActivityType } from "./boredAPITypes";
 
-interface ActivityLink {
-  url: string;
-}
-
 interface User {
   name: string;
   username: string;
@@ -16,16 +12,25 @@ interface User {
   };
 }
 
-export interface BasePredefinedActivity {
+// Create a shared interface for common properties
+interface CommonActivityProperties {
   name: string;
-  type: BoredAPIActivityType | string;
-  imageId: string;
-  blur_hash: string;
+  type: BoredAPIActivityType;
   participants: number;
   price: number;
-  accessibility: number;
+  description: string;
   averageRating: number;
   reviews: number;
+  accesibility: string;
+  listOfLinks: string[];
+  accessibility: number;
+}
+
+export interface IPredefinedActivity
+  extends Document,
+    CommonActivityProperties {
+  imageId: string;
+  blur_hash: string;
   urls: {
     full: string;
     thumb: string;
@@ -34,20 +39,11 @@ export interface BasePredefinedActivity {
   user: User;
 }
 
-export interface IPredefinedActivityNoDocument extends BasePredefinedActivity {
-  description: string;
-  listOfLinks: ActivityLink;
+export interface ICustomActivity extends Document, CommonActivityProperties {
+  imageURL: string;
+  userUID: string;
+  userPictureURL: string;
 }
-
-export interface IPredefinedActivity extends BasePredefinedActivity {
-  description: string;
-  listOfLinks: ActivityLink;
-}
-
-export type IActivityCard = Omit<
-  IPredefinedActivityNoDocument,
-  "description" | "listOfLinks"
->;
 
 export interface IPredefinedActivityIDArray {
   rating: number;
