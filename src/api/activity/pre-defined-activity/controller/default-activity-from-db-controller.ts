@@ -1,7 +1,7 @@
 import { Request, Response } from "express"; // Importa los tipos Request y Response de Express
 import { DefaultActivityFromDB } from "../repository/default-activities-db-repository";
 import { getExistingActivityById } from "../../../../utils/getExistingActivities";
-import PredefinedActivityModel from "../../default-activity-model";
+import PredefinedActivityModel from "../default-activity-model";
 import { DefaultActivityRepository, GlobalDefaultActivityRepository } from "../repository/default-activity-repository";
 
 // Handle the default activities form the Database
