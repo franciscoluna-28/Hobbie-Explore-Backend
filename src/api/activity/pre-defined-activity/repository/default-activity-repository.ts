@@ -2,7 +2,7 @@ import { PaginateModel, Document, Model } from "mongoose";
 import { DefaultActivityFromDB } from "./default-activities-db-repository";
 import { DefaultRandomActivityRepository } from "./default-activities-random-repository";
 import { IPredefinedActivity } from "../../../../types/activityTypes";
-import DefaultActivityModel from "../../default-activity-model";
+import DefaultActivityModel from "../default-activity-model";
 import DefaultActivityUserActionsRepository from "./default-activities-user-actions-repository";
 import UserModel from "../../../user/userModel";
 import { IUser } from "../../../../types/userTypes";
@@ -21,10 +21,14 @@ export class DefaultActivityRepository {
    * @param activityModel The Mongoose model for predefined activities.
    * @param userModel The Mongoose model for users.
    */
-  constructor(activityModel: PaginateModel<IPredefinedActivity & Document>, userModel: Model<IUser>) {
+  constructor(
+    activityModel: PaginateModel<IPredefinedActivity & Document>,
+    userModel: Model<IUser>
+  ) {
     this.defaultActivityDBRepository = new DefaultActivityFromDB(activityModel);
-    this.defaultRandomActivityRepository =
-      new DefaultRandomActivityRepository();
+    this.defaultRandomActivityRepository = new DefaultRandomActivityRepository(
+      DefaultActivityModel
+    );
     this.defaultUserActivityActionsRepository =
       new DefaultActivityUserActionsRepository(userModel);
   }
@@ -57,5 +61,7 @@ export class DefaultActivityRepository {
 /**
  * Global instance of PredefinedActivityRepository to be used across the application.
  */
-export const GlobalDefaultActivityRepository =
-  new DefaultActivityRepository(DefaultActivityModel, UserModel);
+export const GlobalDefaultActivityRepository = new DefaultActivityRepository(
+  DefaultActivityModel,
+  UserModel
+);
