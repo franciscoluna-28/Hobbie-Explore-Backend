@@ -1,7 +1,7 @@
 import { IPredefinedActivity } from "../../../types/activityTypes";
 import { myCache } from "../../../middlewares/cache-middleware";
 import { ProcessedBoredAPIModifiedActivity } from "../../../types/boredAPITypes";
-import DefaultActivityModel from "../default-activity-model";
+import DefaultActivityModel from "../pre-defined-activity/default-activity-model";
 import { getRandomUnfetchedActivityFromDatabase } from "./getRandomUnfetchedActivitiyFromDatabase";
 import { getUnsplashImageWithQuery } from "../../unsplashImage/getImageWithQuery";
 
