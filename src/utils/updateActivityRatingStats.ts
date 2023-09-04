@@ -1,5 +1,5 @@
 import RatingModel from "../api/rating/ratingModel";
-import PredefinedActivityModel from "../api/activity/default-activity-model";
+import PredefinedActivityModel from "../api/activity/pre-defined-activity/default-activity-model";
 
 export async function updateActivityRatingStats(activityId: string) {
   try {
