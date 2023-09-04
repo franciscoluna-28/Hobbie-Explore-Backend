@@ -5,7 +5,7 @@ import {
   getTotalActivitiesForUser,
 } from "../../../helpers/userRepositoryHelper";
 import { IPredefinedActivityIDArray } from "../../../types/activityTypes";
-import ActivityModel from "../../activity/default-activity-model";
+import ActivityModel from "../../activity/pre-defined-activity/default-activity-model";
 import CommentModel from "../../comment/commentModel";
 import { CategoryCounts } from "../../../types/statsType";
 
