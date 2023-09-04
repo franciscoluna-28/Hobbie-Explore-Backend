@@ -1,6 +1,6 @@
 import { IUser } from "../../../../types/userTypes";
 import UserModel from "../../../user/userModel";
-import DefaultActivityModel from "../../default-activity-model";
+import DefaultActivityModel from "../default-activity-model";
 import { findUserByUid } from "../../../../helpers/userRepositoryHelper";
 import { Model } from "mongoose";
 
