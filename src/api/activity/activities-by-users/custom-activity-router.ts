@@ -7,5 +7,6 @@ const customActivityController = new CustomActivityController();
 // Define RESTful routes for custom activities
 customActivityRouter.post("/custom-activities", customActivityController.addCustomActivity);
 customActivityRouter.delete("/custom-activities/:id", customActivityController.deleteCustomActivity);
+customActivityRouter.get("/custom-activities/:uid", customActivityController.getUserActivities);
 
 export default customActivityRouter;
