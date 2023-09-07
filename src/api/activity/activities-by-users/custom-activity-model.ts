@@ -54,7 +54,7 @@ const CustomActivitySchema = new Schema<ICustomActivity & Document>({
   },
   userPictureURL: {
     type: String,
-    required: true,
+    default: "",
   },
   accessibility: {
     type: Number,
